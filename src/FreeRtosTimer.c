@@ -10,6 +10,8 @@
  * \author Erich Styger, erich.styger@hslu.ch
  * \license SPDX-License-Identifier: BSD-3-Clause
  */
+
+#include "platform.h"
 #include "McuRTOS.h"
 #if configUSE_TIMERS
 #include "FreeRtosTimer.h"
