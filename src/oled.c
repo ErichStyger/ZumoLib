@@ -164,13 +164,7 @@ static void OledTask(void *pv) {
     if ((ms%5000)==0) { /* every 5 seconds */
       McuUtility_Num32uToStr(buf, sizeof(buf), counter);
       counter++;
-    #if McuLib_CONFIG_CPU_IS_ESP32
-      Show2Liner((unsigned char*)McuShell_CONFIG_PROJECT_NAME_STRING " ESP32", buf);
-    #elif McuLib_CONFIG_CPU_IS_RPxxxx
-      Show2Liner((unsigned char*)McuShell_CONFIG_PROJECT_NAME_STRING " RP2040", buf);
-    #else
-      #error "???"
-    #endif
+      Show2Liner((unsigned char*)McuShell_CONFIG_PROJECT_NAME_STRING, buf);
     }
     #endif
     vTaskDelay(pdMS_TO_TICKS(100));
