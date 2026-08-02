@@ -1,7 +1,7 @@
 /**
  * \file
- * \brief This is a configuration file for the RNet stack
- * \author (c) 2013-20226 Erich Styger, http://mcuoneclipse.com/
+ * \brief Configuration file for the RNet stack.
+ * \author (c) 2013-2026 Erich Styger, http://mcuoneclipse.com/
  * \note MIT License (http://opensource.org/licenses/mit-license.html)
  *
  * Here the stack can be configured using macros.

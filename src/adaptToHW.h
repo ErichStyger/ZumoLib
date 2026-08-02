@@ -4,6 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+/**
+ * \file
+ * \brief Hardware adaptation interface.
+ * \author Erich Styger, erich.styger@hslu.ch
+ * \license SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #ifndef ADAPTTOHW_H_
 #define ADAPTTOHW_H_
 

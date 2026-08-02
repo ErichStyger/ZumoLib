@@ -6,7 +6,7 @@
 
 /*!
  * \file
- * \brief Buzzer hardware configuration.
+ * \brief LED hardware configuration.
  * \author Erich Styger, erich.styger@hslu.ch
  * \license SPDX-License-Identifier: BSD-3-Clause
  */

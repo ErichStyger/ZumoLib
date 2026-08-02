@@ -1,8 +1,8 @@
 /**
+ * \file
  * \brief Interface for remote controller using Nordic NRF24L01+
  * \author Erich Styger, erich.styger@hslu.ch
  * \license SPDX-License-Identifier: BSD-3-Clause
- * This is the interface for the game items which are common.
  */
 
 #ifndef SOURCES_Remote_Nordic_H_

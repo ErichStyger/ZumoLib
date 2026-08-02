@@ -6,7 +6,7 @@
 
 /*!
  * \file
- * \brief Front line sensor hardware configuration.
+ * \brief Reflectance sensor hardware configuration.
  * \author Erich Styger, erich.styger@hslu.ch
  * \license SPDX-License-Identifier: BSD-3-Clause
  */
