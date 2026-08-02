@@ -285,7 +285,7 @@ static RS485_Response_e WaitForResponse(int32_t timeoutMs, uint8_t fromAddr, Mcu
         McuUtility_chcat(lineBuffer, sizeof(lineBuffer), ch);
         if (ch=='\n') {
           if (lineBuffer[0]!='@') { /* do not send things like OK or NOK messages from bus */
-            SHELL_SendStringToIO(lineBuffer, shellIO);
+            Shell_SendStringToIO(lineBuffer, shellIO);
           }
           lineBuffer[0] = '\0'; /* reset buffer */
         }
@@ -565,9 +565,9 @@ static void RS485Task(void *pv) {
             McuUart485_ClearResponseQueue(); /* clear any pending response: we are going to parse a new command */
             startCmd += sizeof(" cmd ")-1;
             if (dstAddr==RS485_BROADCAST_ADDRESS) {
-              res = SHELL_ParseCommandIO(startCmd, &RS485_stdioBroadcast, true); /* do not write anything back if broadcast */
+              res = Shell_ParseCommandIO(startCmd, &RS485_stdioBroadcast, true); /* do not write anything back if broadcast */
             } else {
-              res = SHELL_ParseCommandIO(startCmd, &RS485_stdio, true);
+              res = Shell_ParseCommandIO(startCmd, &RS485_stdio, true);
             }
             lastError = res; /* remember error status if we get asked later on */
             reply = true;
@@ -580,7 +580,7 @@ static void RS485Task(void *pv) {
       } else {
         /* not starting with '@', print it ... */
         McuUtility_strcat(cmdBuf, sizeof(cmdBuf), (unsigned char*)"\r\n"); /* for the shell parser, the new-line has been removed. Add it again for output */
-        SHELL_SendString((unsigned char *)cmdBuf); /* \TODO do not send directly to UART: instead, use a stdio which buffers the output */
+        Shell_SendString((unsigned char *)cmdBuf); /* \TODO do not send directly to UART: instead, use a stdio which buffers the output */
       }
       cmdBuf[0] = '\0'; /* reset buffer for next iteration */
       /* send response back to sender */

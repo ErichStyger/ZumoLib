@@ -119,22 +119,6 @@
   #include "remoteNordic.h"
 #endif
 
-static void ConfigureLogger(void) {
-#if McuLog_CONFIG_IS_ENABLED
-	#if McuLog_CONFIG_NOF_CONSOLE_LOGGER==2 && PL_CONFIG_USE_RTT && PL_CONFIG_USE_SHELL_UART /* both */
-    McuLog_set_console(McuRTT_GetStdio(), 0);
-    #if McuLog_CONFIG_USE_COLOR
-    McuLog_set_channel_color(0, true);
-    #endif
-    McuLog_set_console(&McuShellUart_stdio, 1);
-  #elif PL_CONFIG_USE_SHELL_UART /* only UART */
-    McuLog_set_console(&McuShellUart_stdio, 0);
-  #elif PL_CONFIG_USE_RTT /* only RTT */
-    McuLog_set_console(McuRTT_GetStdio(), 0);
-  #endif
-#endif
-}
-
 #if PL_CONFIG_USE_ESP32
 static void Esp32ProgrammingCallback(bool isProgramming) {
   /* need to reduce interrupt and task latency and system load during ESP programming, otherwise USB CDC is not fast enough */
@@ -207,7 +191,6 @@ void Platform_Init(void) {
   McuGPIO_Init();
   McuLED_Init();
   McuLog_Init();
-  ConfigureLogger();
 #if PL_CONFIG_USE_SHELL_UART
   McuShellUart_Init();
 #endif
