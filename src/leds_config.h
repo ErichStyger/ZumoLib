@@ -46,7 +46,7 @@
   #define LEDS_CONFIG_ENABLE_CLOCK()    /*!< Enables port clock used by left and right led pin */ \
     CLOCK_EnableClock(kCLOCK_PortD); \
     CLOCK_EnableClock(kCLOCK_PortA);
-#elif McuLib_CONFIG_CPU_IS_ESP32
+#elif McuLib_CONFIG_CPU_IS_ESP32 && CONFIG_ESP32_IS_REMOTE
   #define LEDS_CONFIG_HAS_RED_LED         (1)
   /* red led on IO27, HIGH active */
   #define LEDS_CONFIG_RED_PIN           (GPIO_NUM_27)
@@ -61,6 +61,13 @@
   /* blue led on IO16, HIGH active */
   #define LEDS_CONFIG_BLUE_PIN          (GPIO_NUM_16)
   #define LEDS_CONFIG_BLUE_LOW_ACTIVE   (0)
+#elif McuLib_CONFIG_CPU_IS_ESP32 && CONFIG_ESP32_IS_FN_HAT
+  /* No LEDs yet */
+#elif McuLib_CONFIG_CPU_IS_ESP32 && CONFIG_ESP32_IS_FX_HAT
+  #define LEDS_CONFIG_HAS_RED_LED         (1)
+  /* red led on IO27, HIGH active */
+  #define LEDS_CONFIG_RED_PIN           (GPIO_NUM_10)
+  #define LEDS_CONFIG_RED_LOW_ACTIVE    (1)
 #endif
 
 /* disable all LEDs by default */
