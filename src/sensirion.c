@@ -58,7 +58,7 @@ static void sensirionTask(void *pv) {
       Sensirion_temperature = temperature;
       Sensirion_humidity = humidity;
     } else {
-      McuLog_fatal("error reading SHT sensor.");
+      McuLog_error("failed reading SHT sensor.");
       vTaskDelay(pdMS_TO_TICKS(5000));
     }
   }
