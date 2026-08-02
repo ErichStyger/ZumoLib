@@ -15,7 +15,6 @@
 extern "C" {
 #endif
 
-#if PL_CONFIG_USE_IDENTIFY
   #if PL_CONFIG_USE_SHELL
     #include "McuShell.h"
 
@@ -123,7 +122,6 @@ typedef enum {
 
   /*! \brief Module initialization */
   void ID_Init(void);
-#endif /* PL_CONFIG_USE_IDENTIFY */
 
 #ifdef __cplusplus
 }  /* extern "C" */
