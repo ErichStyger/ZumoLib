@@ -21,6 +21,9 @@
 #include "McuLog.h"
 #include "McuShellUart.h"
 #include "McuTimeDate.h"
+#if PL_CONFIG_USE_BLINKY
+  #include "blinky.h"
+#endif
 #if PL_CONFIG_USE_MOTORS
   #include "motor.h"
 #endif
@@ -107,6 +110,9 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
   McuArmTools_ParseCommand,
 #if PL_CONFIG_USE_LEDS
   Leds_ParseCommand,
+#endif
+#if PL_CONFIG_USE_BLINKY
+  Blinky_ParseCommand,
 #endif
 #if McuLog_CONFIG_IS_ENABLED
   McuLog_ParseCommand,
