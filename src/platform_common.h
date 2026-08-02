@@ -123,6 +123,10 @@ extern "C" {
   #define PL_CONFIG_USE_NORDIC_RADIO     (0)
 #endif
 
+#ifndef PL_CONFIG_USE_TIME_DATE
+  #define PL_CONFIG_USE_TIME_DATE         (1)
+#endif
+
 /*!
  * \brief Initializes the platform and all enabled subsystems.
  */

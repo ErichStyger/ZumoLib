@@ -15,13 +15,16 @@
 #include "FreeRtosTimer.h"
 #include "McuTimeDate.h"
 
+#if PL_CONFIG_USE_TIME_DATE
 static TimerHandle_t timerDateTime; /* timer for date/time */
 
 static void vTimerCallbackDateTime(TimerHandle_t pxTimer) {
   McuTimeDate_AddTick();
 }
+#endif
 
 void FreeRtosTimer_Init(void) {
+#if PL_CONFIG_USE_TIME_DATE
   timerDateTime = xTimerCreate(
     "dateTimeTimer", /* name */
     pdMS_TO_TICKS(McuTimeDate_CONFIG_TICK_TIME_MS), /* period/time */
@@ -32,5 +35,6 @@ void FreeRtosTimer_Init(void) {
     for(;;); /* failure! */
   }
   xTimerStart(timerDateTime, portMAX_DELAY);
+#endif
 }
 #endif /* configUSE_TIMERS */

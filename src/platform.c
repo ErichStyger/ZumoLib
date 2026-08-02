@@ -19,7 +19,12 @@
 #include "McuRTOS.h"
 #include "McuRTT.h"
 #include "McuWait.h"
-#include "FreeRtosTimer.h"
+#if configUSE_TIMERS
+  #include "FreeRtosTimer.h"
+#endif
+#if PL_CONFIG_USE_TIME_DATE
+  #include "McuTimeDate.h"
+#endif
 #if configUSE_PERCEPIO_TRACE_HOOKS
   #include "McuPercepio.h"
 #elif configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
@@ -183,6 +188,9 @@ void Platform_Init(void) {
   McuRTOS_Init();
 #if configUSE_HEAP_SCHEME==5
   vPortDefineHeapRegions(xHeapRegions); /* Pass the array into vPortDefineHeapRegions(). Must be called first! */
+#endif
+#if PL_CONFIG_USE_TIME_DATE
+  McuTimeDate_Init();
 #endif
 #if configUSE_TIMERS
   FreeRtosTimer_Init();
