@@ -10,14 +10,10 @@
  * \author Erich Styger, erich.styger@hslu.ch
  * \license SPDX-License-Identifier: BSD-3-Clause
  */
-#if configUSE_TIMERS
-#include "platform.h"
-#include "FreeRtosTimer.h"
 #include "McuRTOS.h"
+#if configUSE_TIMERS
+#include "FreeRtosTimer.h"
 #include "McuTimeDate.h"
-#if PL_CONFIG_USE_TACHO
-  #include "tacho.h"
-#endif
 
 static TimerHandle_t timerDateTime; /* timer for date/time */
 
