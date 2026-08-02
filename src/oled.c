@@ -108,8 +108,8 @@ static void ShowSensorValues(void) {
   float t, h;
   unsigned char buf1[16], buf2[16];
 
-  h = Sensor_GetHumidity();
-  t = Sensor_GetTemperature();
+  h = Sensirion_GetHumidity();
+  t = Sensirion_GetTemperature();
   McuUtility_strcpy(buf1, sizeof(buf1), (unsigned char*)"T: ");
   McuUtility_strcatNumFloat(buf1, sizeof(buf1), t, 2);
   McuUtility_strcat(buf1, sizeof(buf1), (unsigned char*)" C");

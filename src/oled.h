@@ -19,7 +19,7 @@ extern "C" {
   #include "buttons.h"
   #include "McuDebounce.h"
 
-  void OLED_OnButtonEvent(BTN_Buttons_e button, McuDbnc_EventKinds kind);
+  void OLED_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds kind);
 #endif
 
 void OLED_SendText(const char *text);
