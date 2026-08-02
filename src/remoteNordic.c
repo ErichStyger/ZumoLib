@@ -669,7 +669,7 @@ static void NordicRemoteTask(void *pv) {
 }
 
 void RemoteNordic_Init(void) {
-  if (xTaskCreate(NordicRemoteTask, "NordicRemote", 1000/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS) {
+  if (xTaskCreate(NordicRemoteTask, "NordicRemote", 1024/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS) {
     for(;;){} /* error */
   }
 #if !McuLib_CONFIG_CPU_IS_ESP32
