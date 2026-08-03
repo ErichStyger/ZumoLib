@@ -1,20 +1,16 @@
 /*
- * Copyright (c) 2021, Erich Styger
+ * Copyright (c) 2021-2026, Erich Styger
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include "platform.h"
-#if PL_CONFIG_USE_ROBO_REMOTE
-#include "robot.h"
-#include "udp_server.h"
-#include "wifi.h"
+#if PL_CONFIG_USE_ESP2ROBOT
 #include "McuShell.h"
 #include "McuUtility.h"
 #include "shell.h"
 
 #if PL_CONFIG_USE_SHELL
-
 static uint8_t PrintStatus(const McuShell_StdIOType *io) {
   McuShell_SendStatusStr((unsigned char*)"robo", (unsigned char*)"ESP32 robo status\r\n", io->stdOut);
   return ERR_OK;
@@ -58,7 +54,7 @@ uint8_t Esp2robot_ParseCommand(const unsigned char* cmd, bool *handled, const Mc
       }
       p = buffer;
     }
-    SHELL_SendToRobotAndGetResponse(p, response, sizeof(response));
+    Shell_SendToRobotAndGetResponse(p, response, sizeof(response));
     McuShell_SendStr(response, io->stdOut); /* show result on console */
     return ERR_OK;
   }
@@ -73,4 +69,4 @@ void Esp2robot_Deinit(void) {
 void Esp2robot_Init(void) {
   /* nothing needed */
 }
-#endif /* PL_CONFIG_USE_ROBO_REMOTE */
+#endif /* PL_CONFIG_USE_ESP2ROBOT */

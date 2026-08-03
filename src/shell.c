@@ -120,6 +120,9 @@
   #include "driver/uart.h"
   #include "driver/gpio.h" /* \TODO */
 #endif
+#if PL_CONFIG_USE_ESP2ROBOT
+  #include "esp2robot.h"
+#endif
 #if 0 && PL_HAS_RADIO && PL_CONFIG_USE_LEDS
   #include "roboLED.h" /* \TODO */
 #endif
@@ -222,11 +225,18 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #if PL_CONFIG_USE_RS485 && PL_CONFIG_USE_RS485_SHELL && !McuUart485_CONFIG_USE_RAW
   RS485_ParseCommand,
 #endif
+#if PL_CONFIG_USE_ESP2ROBOT
+  Esp2robot_ParseCommand,
+#endif
 #if 0 && PL_HAS_RADIO && PL_CONFIG_USE_LEDS
   RoboLED_ParseCommand, /* \TODO */
 #endif
   NULL /* Sentinel */
 };
+
+#if PL_CONFIG_USE_ESP2ROBOT
+  static SemaphoreHandle_t SHELL_stdioMutex;
+#endif
 
 typedef struct {
   McuShell_ConstStdIOType *stdio;
@@ -260,9 +270,16 @@ static void ShellTask(void *pvParameters) {
   McuShell_PrintPrompt(McuShell_GetStdio()); /* print prompt */
   for(;;) {
     /* process all I/Os */
-    for(int i=0;i<sizeof(ios)/sizeof(ios[0]);i++) {
-      (void)McuShell_ReadAndParseWithCommandTable(ios[i].buf, ios[i].bufSize, ios[i].stdio, CmdParserTable);
+  #if PL_CONFIG_USE_ESP2ROBOT
+    if (xSemaphoreTakeRecursive(SHELL_stdioMutex, portMAX_DELAY)==pdPASS) { /* take mutex */
+  #endif
+      for(int i=0;i<sizeof(ios)/sizeof(ios[0]);i++) {
+        (void)McuShell_ReadAndParseWithCommandTable(ios[i].buf, ios[i].bufSize, ios[i].stdio, CmdParserTable);
+      }
+  #if PL_CONFIG_USE_ESP2ROBOT
+      (void)xSemaphoreGiveRecursive(SHELL_stdioMutex); /* give back mutex */
     }
+  #endif
   #if PL_CONFIG_USE_NORDIC_RADIO && RNET_CONFIG_REMOTE_STDIO
     RSTDIO_Print(McuShell_GetStdio()); /* dispatch incoming messages */
   #endif
@@ -337,7 +354,7 @@ static McuShell_ConstStdIOType esp_stdio = {
 #endif
 };
 
-void SHELL_SendToESPAndGetResponse(const unsigned char *msg, unsigned char *response, size_t responseSize) {
+void Shell_SendToESPAndGetResponse(const unsigned char *msg, unsigned char *response, size_t responseSize) {
   esp_io_buf = response;
   esp_io_buf_size = responseSize;
   esp_io_buf[0] = '\0'; /* initialize buffer */
@@ -347,8 +364,10 @@ void SHELL_SendToESPAndGetResponse(const unsigned char *msg, unsigned char *resp
     McuUtility_strcpy(response, responseSize, (unsigned char*)"OK"); /* default response */
   }
 }
+#endif 
 /* ----------------------------------------------------------------------*/
-void SHELL_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *response, size_t responseSize) {
+#if PL_CONFIG_USE_ESP2ROBOT
+void Shell_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *response, size_t responseSize) {
   unsigned char buffer[128]; /* buffer for sending command to robot */
 
   /* build a frame around the message: that way the robot is able to recognize it */
@@ -367,7 +386,7 @@ void SHELL_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *r
   *response = '\0';
   if (xSemaphoreTakeRecursive(SHELL_stdioMutex, portMAX_DELAY)==pdPASS) { /* take mutex */
     while (true) { /* breaks after timeout */
-      if (!Uart_stdio.keyPressed()) { /* no input: wait for timeout */
+      if (!McuShellUart_stdio.keyPressed()) { /* no input: wait for timeout */
         timeoutMs -= 50;
         if (timeoutMs<=0) {
           break; /* timeout */
@@ -375,7 +394,7 @@ void SHELL_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *r
         vTaskDelay(pdMS_TO_TICKS(50));
       } else { /* character available */
         unsigned char ch;
-        Uart_stdio.stdIn(&ch);
+        McuShellUart_stdio.stdIn(&ch);
         if (ch!='\r') { /* filter out '\r' in "\r\n" */
           McuUtility_chcat(response, responseSize, ch);
         }
@@ -391,7 +410,8 @@ void SHELL_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *r
   McuUtility_strcpy(response, responseSize, (unsigned char*)"OK"); /* default response */
 #endif
 }
-#endif /* McuLib_CONFIG_CPU_IS_ESP32 */
+#endif /* PL_CONFIG_USE_ESP2ROBOT */
+
 /* ----------------------------------------------------------------------*/
 
 #if 0 && McuESP32_CONFIG_IS_ENABLED
@@ -443,7 +463,7 @@ static void ConfigureLogger(void) {
 }
 
 void Shell_Init(void) {
-#if 0 && McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_USE_ESP2ROBOT
   SHELL_stdioMutex = xSemaphoreCreateRecursiveMutex();
   if (SHELL_stdioMutex==NULL) { /* creation failed? */
     McuLog_fatal("Failed creating mutex");
