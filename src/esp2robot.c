@@ -12,7 +12,7 @@
 
 #if PL_CONFIG_USE_SHELL
 static uint8_t PrintStatus(const McuShell_StdIOType *io) {
-  McuShell_SendStatusStr((unsigned char*)"robo", (unsigned char*)"ESP32 robo status\r\n", io->stdOut);
+  McuShell_SendStatusStr((unsigned char*)"esp2robot", (unsigned char*)"ESP-2-Robot channel status\r\n", io->stdOut);
   return ERR_OK;
 }
 
