@@ -215,12 +215,13 @@ void Platform_Init(void) {
 #if PL_CONFIG_USE_ESP32
   McuESP32_Init();
   #if McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC
-  McuShellCdcDevice_SetRtsCtsCallback(McuESP32_UartStateCallback); /* callback to called in case of RTS/CTS (line status change) */
-  McuShellCdcDevice_SetChangeBaudCallback(McuESP32_ChangeUartBaudCallback); /* callback to be called in case of baud rate request */
-  McuESP32_SetUsbCdcStdio(McuShellCdcDevice_GetStdio());
-  McuESP32_SetUsbCdcIsConnectedCallback(McuShellCdcDevice_IsReady); /* which callback to use to check if we have USB connected */
-  McuESP32_SetUsbFlushCallback(McuShellCdcDevice_Flush); /* which callback to call to flush the USB outgoing data */
-  McuESP32_SetProgrammingCallback(Esp32ProgrammingCallback); /* callback to reduce system load for improved USB CDC performance */
+    McuShellCdcDevice_SetRtsCtsCallback(McuESP32_UartStateCallback); /* callback to called in case of RTS/CTS (line status change) */
+    McuShellCdcDevice_SetChangeBaudCallback(McuESP32_ChangeUartBaudCallback); /* callback to be called in case of baud rate request */
+    McuESP32_SetUsbCdcStdio(McuShellCdcDevice_GetStdio());
+    McuESP32_SetUsbCdcIsConnectedCallback(McuShellCdcDevice_IsReady); /* which callback to use to check if we have USB connected */
+    McuESP32_SetUsbFlushCallback(McuShellCdcDevice_Flush); /* which callback to call to flush the USB outgoing data */
+    McuESP32_SetProgrammingCallback(Esp32ProgrammingCallback); /* callback to reduce system load for improved USB CDC performance */
+    McuESP32_SetRxFromESPStdio(Shell_GetIOforEspRx()); /* assign optional I/O for incoming ESP data */
   #endif
 #endif
 #if PL_CONFIG_USE_IDENTIFY
