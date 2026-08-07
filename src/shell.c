@@ -366,7 +366,7 @@ void Shell_SendToESPAndGetResponse(const unsigned char *msg, unsigned char *resp
 }
 #endif 
 /* ----------------------------------------------------------------------*/
-#if PL_CONFIG_USE_ESP2ROBOT
+#if McuESP32_CONFIG_IS_ENABLED && PL_CONFIG_USE_ESP2ROBOT
 void Shell_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *response, size_t responseSize) {
   unsigned char buffer[128]; /* buffer for sending command to robot */
 
@@ -411,11 +411,9 @@ void Shell_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *r
 #endif
 }
 #endif /* PL_CONFIG_USE_ESP2ROBOT */
-
 /* ----------------------------------------------------------------------*/
-
-#if 0 && McuESP32_CONFIG_IS_ENABLED
-/* write output from the ESP to the shell too */
+#if McuESP32_CONFIG_IS_ENABLED
+/* write output from the ESP to the robot shell too */
 static void ESP_SendChar(unsigned char ch) {
 #if PL_CONFIG_USE_SHELL_UART
   McuShellUart_stdio.stdOut(ch);
