@@ -412,8 +412,8 @@ void Shell_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *r
 }
 #endif /* PL_CONFIG_USE_ESP2ROBOT */
 /* ----------------------------------------------------------------------*/
-#if McuESP32_CONFIG_IS_ENABLED
-/* write output from the ESP to the robot shell too */
+#if !McuLib_CONFIG_CPU_IS_ESP32 && McuESP32_CONFIG_IS_ENABLED
+/* write output from the ESP to the robot shell */
 static void ESP_SendChar(unsigned char ch) {
 #if PL_CONFIG_USE_SHELL_UART
   McuShellUart_stdio.stdOut(ch);
@@ -444,11 +444,12 @@ McuShell_ConstStdIOType ESP_ToShellStdio = {
     .writeData = ESP_WriteData,
   #endif
   };
-#endif /* McuESP32_CONFIG_IS_ENABLED */
 
 McuShell_ConstStdIOTypePtr Shell_GetIOforEspRx(void) {
   return &ESP_ToShellStdio; /* send ESP data to K22 UART */
 }
+#endif /* !McuLib_CONFIG_CPU_IS_ESP32 && McuESP32_CONFIG_IS_ENABLED */
+
 
 static void ConfigureLogger(void) {
 #if McuLog_CONFIG_IS_ENABLED
