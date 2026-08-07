@@ -48,6 +48,9 @@ void SHELL_SendChar(unsigned char ch);
  */
 uint8_t Shell_ParseCommandIO(const unsigned char *command, McuShell_ConstStdIOType *io, bool silent);
 
+
+McuShell_ConstStdIOTypePtr Shell_GetIOforEspRx(void);
+
 /*!
  * \brief Send a string to the ESP shell get a response back
  * \param send Message to send

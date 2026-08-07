@@ -439,6 +439,10 @@ McuShell_ConstStdIOType ESP_ToShellStdio = {
   };
 #endif /* McuESP32_CONFIG_IS_ENABLED */
 
+McuShell_ConstStdIOTypePtr Shell_GetIOforEspRx(void) {
+  return &McuShellUart_stdio; /* send ESP data to K22 UART */
+}
+
 static void ConfigureLogger(void) {
 #if McuLog_CONFIG_IS_ENABLED
 	#if McuLog_CONFIG_NOF_CONSOLE_LOGGER==2 && PL_CONFIG_USE_RTT && PL_CONFIG_USE_SHELL_UART /* two loggers possible */
