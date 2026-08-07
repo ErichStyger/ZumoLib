@@ -20,7 +20,7 @@ static uint8_t PrintHelp(const McuShell_StdIOType *io) {
   McuShell_SendHelpStr((unsigned char*)"esp2robot", (unsigned char*)"Group of ESP to Robot commands\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows esp2robot help or status\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  send <text>", (unsigned char*)"Send a text to the robot\r\n", io->stdOut);
-  McuShell_SendHelpStr((unsigned char*)"  sendcmd <cmd>", (unsigned char*)"Send a command to the robot, e.g. '#buzzer buz 100 200'\r\n", io->stdOut);
+  McuShell_SendHelpStr((unsigned char*)"  sendcmd <cmd>", (unsigned char*)"Send a command to the robot, e.g. \"#buzzer buz 100 200\"\r\n", io->stdOut);
   return ERR_OK;
 }
 
