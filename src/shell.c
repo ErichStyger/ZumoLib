@@ -428,6 +428,10 @@ static bool ESP_CharPresent(void) {
   return false;
 }
 
+static int ESP_WriteData(const void *data, size_t size) {
+  return McuShellUart_WriteBytes(data, size);
+}
+
 McuShell_ConstStdIOType ESP_ToShellStdio = {
     .stdIn = (McuShell_StdIO_In_FctType)ESP_ReadChar,
     .stdOut = (McuShell_StdIO_OutErr_FctType)ESP_SendChar,
@@ -436,11 +440,14 @@ McuShell_ConstStdIOType ESP_ToShellStdio = {
   #if McuShell_CONFIG_ECHO_ENABLED
     .echoEnabled = false,
   #endif
+  #if McuShell_CONFIG_HAS_WRITE_DATA
+    .writeData = ESP_WriteData,
+  #endif
   };
 #endif /* McuESP32_CONFIG_IS_ENABLED */
 
 McuShell_ConstStdIOTypePtr Shell_GetIOforEspRx(void) {
-  return &McuShellUart_stdio; /* send ESP data to K22 UART */
+  return &ESP_ToShellStdio; /* send ESP data to K22 UART */
 }
 
 static void ConfigureLogger(void) {
