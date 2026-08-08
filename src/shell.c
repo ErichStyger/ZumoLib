@@ -126,6 +126,9 @@
 #if PL_CONFIG_USE_REMOTE_ROBO_LED
   #include "roboLED.h"
 #endif
+#if PL_CONFIG_USE_ROBOT_TO_ESP
+  #include "robotToEsp.h"
+#endif
 
 static const McuShell_ParseCommandCallback CmdParserTable[] =
 {
@@ -231,6 +234,9 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #if PL_CONFIG_USE_REMOTE_ROBO_LED
   RoboLED_ParseCommand,
 #endif
+#if PL_CONFIG_USE_ROBOT_TO_ESP
+  RobotToEsp_ParseCommand,
+#endif
   NULL /* Sentinel */
 };
 
@@ -295,23 +301,6 @@ void Shell_SendChar(unsigned char ch) {
     McuShell_SendCh(ch, ios[0].stdio->stdOut);
 }
 
-uint8_t Shell_ParseCommand(unsigned char *cmd) {
-  return McuShell_ParseWithCommandTable(cmd, McuShell_GetStdio(), CmdParserTable);
-}
-
-void Shell_SendStringToIO(const unsigned char *str, McuShell_ConstStdIOType *io) {
-  if (io->writeData!=NULL) {
-    size_t len = McuUtility_strlen((char*)str);
-    io->writeData(str, len);
-  } else {
-    McuShell_SendStr(str, io->stdOut);
-  }
-}
-
-void Shell_SendString(const unsigned char *str) {
-  Shell_SendStringToIO(str, ios[0].stdio);
-}
-
 uint8_t Shell_ParseCommandIO(const unsigned char *command, McuShell_ConstStdIOType *io, bool silent) {
   if (io==NULL) { /* use a default */
 #if PL_CONFIG_USE_SHELL_UART
@@ -327,129 +316,26 @@ uint8_t Shell_ParseCommandIO(const unsigned char *command, McuShell_ConstStdIOTy
   return McuShell_ParseWithCommandTableExt(command, io, CmdParserTable, silent);
 }
 
-#if 0 && McuLib_CONFIG_CPU_IS_ESP32
-/* ----------------- buffer handling for shell messages sent to ESP32 */
-static unsigned char *esp_io_buf; /* pointer to buffer */
-static size_t esp_io_buf_size; /* size of buffer */
-
-static void esp_io_buf_SendChar(unsigned char ch) {
-  McuUtility_chcat(esp_io_buf, esp_io_buf_size, ch);
+uint8_t Shell_ParseCommand(unsigned char *cmd) {
+  return McuShell_ParseWithCommandTableExt(cmd, McuShell_GetStdio(), CmdParserTable, false);
 }
 
-static void esp_io_buf_ReadChar(uint8_t *c) {
-  *c = '\0';
+uint8_t Shell_ParseCommandWithIO(unsigned char *cmd, McuShell_ConstStdIOType *io) {
+  return McuShell_ParseWithCommandTableExt(cmd, io, CmdParserTable, false);
 }
 
-static bool esp_io_buf_CharPresent(void) {
-  return false;
-}
-
-static McuShell_ConstStdIOType esp_stdio = {
-  .stdIn = (McuShell_StdIO_In_FctType)esp_io_buf_ReadChar,
-  .stdOut = (McuShell_StdIO_OutErr_FctType)esp_io_buf_SendChar,
-  .stdErr = (McuShell_StdIO_OutErr_FctType)esp_io_buf_SendChar,
-  .keyPressed = esp_io_buf_CharPresent, /* if input is not empty */
-#if McuShell_CONFIG_ECHO_ENABLED
-  .echoEnabled = false, /* echo enabled for idf.py monitor */
-#endif
-};
-
-void Shell_SendToESPAndGetResponse(const unsigned char *msg, unsigned char *response, size_t responseSize) {
-  esp_io_buf = response;
-  esp_io_buf_size = responseSize;
-  esp_io_buf[0] = '\0'; /* initialize buffer */
-  McuLog_info("Sending to ESP Shell: %s", msg);
-  McuShell_ParseWithCommandTableExt(msg, &esp_stdio, CmdParserTable, true); /* send to ESP32 shell */
-  if (response[0]=='\0') { /* empty response? add a default */
-    McuUtility_strcpy(response, responseSize, (unsigned char*)"OK"); /* default response */
+void Shell_SendStringToIO(const unsigned char *str, McuShell_ConstStdIOType *io) {
+  if (io->writeData!=NULL) {
+    size_t len = McuUtility_strlen((char*)str);
+    io->writeData(str, len);
+  } else {
+    McuShell_SendStr(str, io->stdOut);
   }
 }
-#endif 
-/* ----------------------------------------------------------------------*/
-#if McuLib_CONFIG_CPU_IS_ESP32 && PL_CONFIG_USE_ESP2ROBOT
-void Shell_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *response, size_t responseSize) {
-  unsigned char buffer[128]; /* buffer for sending command to robot */
 
-  /* build a frame around the message: that way the robot is able to recognize it */
-  McuUtility_strcpy(buffer, sizeof(buffer), (unsigned char*)"@robot:cmd ");
-  McuUtility_strcat(buffer, sizeof(buffer), send);
-  McuUtility_strcat(buffer, sizeof(buffer), (unsigned char*)"!\r\n");
-  Shell_SendString(buffer); /* send to UART, which is read by the robot */
-  /* get response */
-#if 1
-  /* Important: this consumes directly all characters coming from the robot. That way the ESP32 shell does not get it.
-   * A mutex is used to block the shell from getting the UART stream.
-   */
-  #define TIMEOUT_MS  (500) /* stop if we don't get new input after this timeout */
-  int timeoutMs = TIMEOUT_MS;
-
-  *response = '\0';
-  if (xSemaphoreTakeRecursive(SHELL_stdioMutex, portMAX_DELAY)==pdPASS) { /* take mutex */
-    while (true) { /* breaks after timeout */
-      if (!McuShellUart_stdio.keyPressed()) { /* no input: wait for timeout */
-        timeoutMs -= 50;
-        if (timeoutMs<=0) {
-          break; /* timeout */
-        }
-        vTaskDelay(pdMS_TO_TICKS(50));
-      } else { /* character available */
-        unsigned char ch;
-        McuShellUart_stdio.stdIn(&ch);
-        if (ch!='\r') { /* filter out '\r' in "\r\n" */
-          McuUtility_chcat(response, responseSize, ch);
-        }
-        timeoutMs = TIMEOUT_MS; /* reset timeout */
-      } /* if */
-    } /* while */
-    (void)xSemaphoreGiveRecursive(SHELL_stdioMutex); /* give back mutex */
-  }
-  if (*response=='\0') { /* if response is empty, send back at least an acknowledgment */
-    McuUtility_strcpy(response, responseSize, (unsigned char*)"OK"); /* default response */
-  }
-#else
-  McuUtility_strcpy(response, responseSize, (unsigned char*)"OK"); /* default response */
-#endif
+void Shell_SendString(const unsigned char *str) {
+  Shell_SendStringToIO(str, ios[0].stdio);
 }
-#endif /* PL_CONFIG_USE_ESP2ROBOT */
-/* ----------------------------------------------------------------------*/
-#if !McuLib_CONFIG_CPU_IS_ESP32 && McuESP32_CONFIG_IS_ENABLED
-/* write output from the ESP to the robot shell */
-static void ESP_SendChar(unsigned char ch) {
-#if PL_CONFIG_USE_SHELL_UART
-  McuShellUart_stdio.stdOut(ch);
-#endif
-}
-
-static void ESP_ReadChar(uint8_t *c) {
-  *c = '\0'; /* nothing received */
-}
-
-static bool ESP_CharPresent(void) {
-  return false;
-}
-
-static int ESP_WriteData(const void *data, size_t size) {
-  return McuShellUart_WriteBytes(data, size);
-}
-
-McuShell_ConstStdIOType ESP_ToShellStdio = {
-    .stdIn = (McuShell_StdIO_In_FctType)ESP_ReadChar,
-    .stdOut = (McuShell_StdIO_OutErr_FctType)ESP_SendChar,
-    .stdErr = (McuShell_StdIO_OutErr_FctType)ESP_SendChar,
-    .keyPressed = ESP_CharPresent, /* if input is not empty */
-  #if McuShell_CONFIG_ECHO_ENABLED
-    .echoEnabled = false,
-  #endif
-  #if McuShell_CONFIG_HAS_WRITE_DATA
-    .writeData = ESP_WriteData,
-  #endif
-  };
-
-McuShell_ConstStdIOTypePtr Shell_GetIOforEspRx(void) {
-  return &ESP_ToShellStdio; /* send ESP data to K22 UART */
-}
-#endif /* !McuLib_CONFIG_CPU_IS_ESP32 && McuESP32_CONFIG_IS_ENABLED */
-
 
 static void ConfigureLogger(void) {
 #if McuLog_CONFIG_IS_ENABLED

@@ -112,8 +112,8 @@
   #include "McuSPI.h"
   #include "RNet_App.h"
 #endif
-#if PL_CONFIG_USE_REMOTE_ESP_UART
-  #include "remoteESPUart.h"
+#if PL_CONFIG_USE_ROBOT_TO_ESP
+  #include "robotToEsp.h"
 #endif
 #if PL_CONFIG_USE_REMOTE_NORDIC
   #include "remoteNordic.h"
@@ -224,7 +224,9 @@ void Platform_Init(void) {
     McuESP32_SetUsbCdcIsConnectedCallback(McuShellCdcDevice_IsReady); /* which callback to use to check if we have USB connected */
     McuESP32_SetUsbFlushCallback(McuShellCdcDevice_Flush); /* which callback to call to flush the USB outgoing data */
     McuESP32_SetProgrammingCallback(Esp32ProgrammingCallback); /* callback to reduce system load for improved USB CDC performance */
-    McuESP32_SetRxFromESPStdio(Shell_GetIOforEspRx()); /* assign optional I/O for incoming ESP data */
+  #endif
+  #if PL_CONFIG_USE_ROBOT_TO_ESP
+    McuESP32_SetRxFromESPStdio(RobotToEsp_GetIOforEspRx()); /* assign optional I/O for incoming ESP data */
   #endif
 #endif
 #if PL_CONFIG_USE_IDENTIFY
@@ -284,9 +286,6 @@ void Platform_Init(void) {
   McuSPI_Init();
   RNETA_Init();
 #endif
-#if PL_CONFIG_USE_REMOTE_ESP_UART
-  REMOTE_Init();
-#endif
 #if PL_CONFIG_USE_REMOTE_NORDIC
   RemoteNordic_Init();
 #endif
@@ -295,6 +294,9 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_USE_REMOTE_ROBO_LED
   RobotLED_Init();
+#endif
+#if PL_CONFIG_USE_ROBOT_TO_ESP
+  RobotToEsp_Init();
 #endif
 #if PL_CONFIG_USE_ADOPT_HW
   ADAPT_AdaptToHardware(); /* must be after quadcounter and motor modules */
