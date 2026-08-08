@@ -241,7 +241,11 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 };
 
 #if PL_CONFIG_USE_ESP2ROBOT
-  static SemaphoreHandle_t SHELL_stdioMutex;
+  static SemaphoreHandle_t Shell_stdioMutex = NULL; /* mutex used to allow the esp2robot task getting exclusive access to the parsing */
+
+  SemaphoreHandle_t Shell_GetMutex(void) {
+    return Shell_stdioMutex;
+  }
 #endif
 
 typedef struct {
@@ -277,13 +281,13 @@ static void ShellTask(void *pvParameters) {
   for(;;) {
     /* process all I/Os */
   #if PL_CONFIG_USE_ESP2ROBOT
-    if (xSemaphoreTakeRecursive(SHELL_stdioMutex, portMAX_DELAY)==pdPASS) { /* take mutex */
+    if (xSemaphoreTakeRecursive(Shell_stdioMutex, portMAX_DELAY)==pdPASS) { /* take mutex */
   #endif
       for(int i=0;i<sizeof(ios)/sizeof(ios[0]);i++) {
         (void)McuShell_ReadAndParseWithCommandTable(ios[i].buf, ios[i].bufSize, ios[i].stdio, CmdParserTable);
       }
   #if PL_CONFIG_USE_ESP2ROBOT
-      (void)xSemaphoreGiveRecursive(SHELL_stdioMutex); /* give back mutex */
+      (void)xSemaphoreGiveRecursive(Shell_stdioMutex); /* give back mutex */
     }
   #endif
   #if PL_CONFIG_USE_NORDIC_RADIO && RNET_CONFIG_REMOTE_STDIO
@@ -360,8 +364,8 @@ static void ConfigureLogger(void) {
 
 void Shell_Init(void) {
 #if PL_CONFIG_USE_ESP2ROBOT
-  SHELL_stdioMutex = xSemaphoreCreateRecursiveMutex();
-  if (SHELL_stdioMutex==NULL) { /* creation failed? */
+  Shell_stdioMutex = xSemaphoreCreateRecursiveMutex();
+  if (Shell_stdioMutex==NULL) { /* creation failed? */
     McuLog_fatal("Failed creating mutex");
     for(;;);
   }

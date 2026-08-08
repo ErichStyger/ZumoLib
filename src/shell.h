@@ -19,6 +19,7 @@ extern "C" {
 #endif
 
 #include "McuShell.h"
+#include "McuRTOS.h"
 
 /*!
  * \brief Send a string to all supported I/Os
@@ -48,23 +49,19 @@ void SHELL_SendChar(unsigned char ch);
  */
 uint8_t Shell_ParseCommandIO(const unsigned char *command, McuShell_ConstStdIOType *io, bool silent);
 
+/*!
+ * \brief Parses a command with a given standard I/O channel, in non-silent mode
+ * \param command Command to be parsed
+ * \param io I/O to be used. If NULL, the standard default I/O will be used
+ * \return Error code, ERR_OK for no error
+ */
 uint8_t Shell_ParseCommandWithIO(unsigned char *cmd, McuShell_ConstStdIOType *io);
 
 /*!
- * \brief Send a string to the ESP shell get a response back
- * \param send Message to send
- * \param response Where to store the response
- * \param responseSize Size of the response buffer
+ * \brief Get a mutex handle to get exclusive control over the shell parsing. Needed for ESP-2-Robot gateway.
+ * \return Mutex handle to control access to shell parsing.
  */
-void Shell_SendToESPAndGetResponse(const unsigned char *send, unsigned char *response, size_t responseSize);
-
-/*!
- * \brief Send a string to the robot get a response back
- * \param send Message to send
- * \param response Where to store the response
- * \param responseSize Size of the response buffer
- */
-void Shell_SendToRobotAndGetResponse(const unsigned char *send, unsigned char *response, size_t responseSize);
+SemaphoreHandle_t Shell_GetMutex(void);
 
 /*!
  * \brief Module de-initialization

@@ -2,13 +2,15 @@
  * Copyright (c) 2021-2026, Erich Styger
  *
  * SPDX-License-Identifier: BSD-3-Clause
- * \brief This module is responsible for the ESP to send commands to the robot.
+ * \brief This module is for the ESP2 and responsible for the ESP to send commands to the robot.
  */
 
 #include "platform.h"
 #if PL_CONFIG_USE_ESP2ROBOT
 #include "McuShell.h"
 #include "McuUtility.h"
+#include "McuRTOS.h"
+#include "McuShellUart.h"
 #include "shell.h"
 
 static void SendToRobotAndGetResponse(const unsigned char *send, unsigned char *response, size_t responseSize) {
@@ -28,7 +30,7 @@ static void SendToRobotAndGetResponse(const unsigned char *send, unsigned char *
   int timeoutMs = TIMEOUT_MS;
 
   *response = '\0';
-  if (xSemaphoreTakeRecursive(SHELL_stdioMutex, portMAX_DELAY)==pdPASS) { /* take mutex */
+  if (xSemaphoreTakeRecursive(Shell_GetMutex(), portMAX_DELAY)==pdPASS) { /* take mutex */
     while (true) { /* breaks after timeout */
       if (!McuShellUart_stdio.keyPressed()) { /* no input: wait for timeout */
         timeoutMs -= 50;
@@ -45,7 +47,7 @@ static void SendToRobotAndGetResponse(const unsigned char *send, unsigned char *
         timeoutMs = TIMEOUT_MS; /* reset timeout */
       } /* if */
     } /* while */
-    (void)xSemaphoreGiveRecursive(SHELL_stdioMutex); /* give back mutex */
+    (void)xSemaphoreGiveRecursive(Shell_GetMutex()); /* give back mutex */
   }
   if (*response=='\0') { /* if response is empty, send back at least an acknowledgment */
     McuUtility_strcpy(response, responseSize, (unsigned char*)"OK"); /* default response */
