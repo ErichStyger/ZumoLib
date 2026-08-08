@@ -136,7 +136,14 @@ static void prepare_next_setup_packet(uint8_t rhport)
   const unsigned out_odd = _dcd.endpoint[0][0].odd;
   const unsigned in_odd  = _dcd.endpoint[0][1].odd;
 
-  TU_ASSERT(0 == _dcd.bdt[0][0][out_odd].own,);
+  #if 0
+    TU_ASSERT(0 == _dcd.bdt[0][0][out_odd].own,);
+  #else
+    if (_dcd.bdt[0][0][out_odd].own) {
+      TU_LOG1("DCD fail to prepare the next SETUP %d %d\r\n", out_odd, in_odd);
+      return;
+    }
+  #endif
 
   _dcd.bdt[0][0][out_odd].data     = 0;
   _dcd.bdt[0][0][out_odd ^ 1].data = 1;
