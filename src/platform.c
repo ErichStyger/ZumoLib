@@ -121,6 +121,9 @@
 #if PL_CONFIG_USE_ESP2ROBOT
   #include "esp2robot.h"
 #endif
+#if PL_CONFIG_USE_REMOTE_ROBO_LED
+  #include "roboLED.h"
+#endif
 
 #if PL_CONFIG_USE_ESP32
 static void Esp32ProgrammingCallback(bool isProgramming) {
@@ -289,6 +292,9 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_USE_ESP2ROBOT
   Esp2robot_Init();
+#endif
+#if PL_CONFIG_USE_REMOTE_ROBO_LED
+  RobotLED_Init();
 #endif
 #if PL_CONFIG_USE_ADOPT_HW
   ADAPT_AdaptToHardware(); /* must be after quadcounter and motor modules */

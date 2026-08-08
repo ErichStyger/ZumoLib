@@ -123,8 +123,8 @@
 #if PL_CONFIG_USE_ESP2ROBOT
   #include "esp2robot.h"
 #endif
-#if 0 && PL_HAS_RADIO && PL_CONFIG_USE_LEDS
-  #include "roboLED.h" /* \TODO */
+#if PL_CONFIG_USE_REMOTE_ROBO_LED
+  #include "roboLED.h"
 #endif
 
 static const McuShell_ParseCommandCallback CmdParserTable[] =
@@ -228,8 +228,8 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #if PL_CONFIG_USE_ESP2ROBOT
   Esp2robot_ParseCommand,
 #endif
-#if 0 && PL_HAS_RADIO && PL_CONFIG_USE_LEDS
-  RoboLED_ParseCommand, /* \TODO */
+#if PL_CONFIG_USE_REMOTE_ROBO_LED
+  RoboLED_ParseCommand,
 #endif
   NULL /* Sentinel */
 };

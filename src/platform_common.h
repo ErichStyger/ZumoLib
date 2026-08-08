@@ -23,7 +23,7 @@ extern "C" {
 #define PL_CONFIG_DISABLE_NMI_EZPORT    (1 && CONFIG_PLATFORM_IS_ZUMO_2025) /*!< 1: disable NMI & EZPORT in startup code, because NMI/PTA4 is used on new robot board */
 
 #ifndef PL_CONFIG_USE_LEDS
-  #define PL_CONFIG_USE_LEDS             (1)
+  #define PL_CONFIG_USE_LEDS              (1)
 #endif
 
 #ifndef PL_CONFIG_USE_BLINKY
@@ -120,11 +120,15 @@ extern "C" {
 #endif
 
 #ifndef PL_CONFIG_USE_NORDIC_RADIO
-  #define PL_CONFIG_USE_NORDIC_RADIO     (0)
+  #define PL_CONFIG_USE_NORDIC_RADIO        (0)
+#endif
+
+#ifndef PL_CONFIG_USE_REMOTE_ROBO_LED
+  #define PL_CONFIG_USE_REMOTE_ROBO_LED     (0 && PL_CONFIG_USE_NORDIC_RADIO && McuRNET_CONFIG_IS_ENABLED && PL_CONFIG_USE_LEDS)
 #endif
 
 #ifndef PL_CONFIG_USE_TIME_DATE
-  #define PL_CONFIG_USE_TIME_DATE         (1)
+  #define PL_CONFIG_USE_TIME_DATE           (1)
 #endif
 
 /*!
