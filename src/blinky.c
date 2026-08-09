@@ -24,13 +24,17 @@ void Blinky_SetOnTime(uint32_t ms) {
 
 void Blinky_On(void) {
 #if LEDS_CONFIG_HAS_RED_LED
-  Leds_On(LEDS_CONFIG_HAS_RED_LED);
+  Leds_On(LEDS_RED);
+#elif LEDS_CONFIG_HAS_LEFT_RED_LED
+  Leds_On(LEDS_LEFT_RED);
 #endif
 }
 
 void Blinky_Off(void) {
 #if LEDS_CONFIG_HAS_RED_LED
-  Leds_Off(LEDS_CONFIG_HAS_RED_LED);
+  Leds_Off(LEDS_RED);
+#elif LEDS_CONFIG_HAS_LEFT_RED_LED
+  Leds_Off(LEDS_LEFT_RED);
 #endif
 }
 
