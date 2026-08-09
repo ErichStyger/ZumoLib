@@ -136,7 +136,7 @@ static uint8_t PrintHelp(McuShell_ConstStdIOType *io) {
   McuShell_SendHelpStr((unsigned char*)"  leftred on|off|neg", (const unsigned char*)"Control left red LED\r\n", io->stdOut);
 #endif
 #if LEDS_CONFIG_HAS_LEFT_RED_LED
-  McuShell_SendHelpStr((unsigned char*)"  rigtred on|off|neg", (const unsigned char*)"Control right red LED\r\n", io->stdOut);
+  McuShell_SendHelpStr((unsigned char*)"  rightred on|off|neg", (const unsigned char*)"Control right red LED\r\n", io->stdOut);
 #endif
 #if LEDS_CONFIG_HAS_RED_LED
   McuShell_SendHelpStr((unsigned char*)"  red on|off|neg", (const unsigned char*)"Control red LED\r\n", io->stdOut);
