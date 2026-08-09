@@ -19,7 +19,7 @@ static bool LedIsOn(void) {
 #if McuLib_CONFIG_CPU_IS_ESP32
   return Leds_Get(LEDS_CONFIG_HAS_RED_LED);
 #else /* robot */
-  return McuLED_Get(LEDS_Right);
+  return Leds_Get(LEDS_LEFT_RED);
 #endif
 }
 
@@ -30,8 +30,12 @@ static void SetLed(bool on) {
   } else {
     Leds_Off(LEDS_RED);
   }
-#else /* robot **/
-  McuLED_Set(LEDS_Right, on);
+#else /* robot */
+  if (on) {
+    Leds_On(LEDS_LEFT_RED);
+  } else {
+    Leds_Off(LEDS_LEFT_RED);
+  }
 #endif
 }
 
