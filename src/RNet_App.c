@@ -28,6 +28,9 @@
 #if PL_CONFIG_USE_REMOTE_NORDIC
   #include "remoteNordic.h"
 #endif
+#if PL_CONFIG_USE_REMOTE_RNET_LED
+  #include "remoteRnetLED.h"
+#endif
 #if PL_CONFIG_HAS_LCD
   #include "LCD.h"
 #endif
@@ -98,6 +101,9 @@ static const RAPP_MsgHandler handlerTable[] =
 #endif
 #if PL_CONFIG_USE_REMOTE_NORDIC
   RemoteNordic_HandleRemoteRxMessage,
+#endif
+#if PL_CONFIG_USE_REMOTE_RNET_LED
+  RemoteRnetLED_HandleRemoteRxMessage,
 #endif
 #if PL_CONFIG_HAS_LCD
   LCD_HandleRemoteRxMessage,
