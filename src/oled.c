@@ -20,7 +20,7 @@
 #if PL_CONFIG_USE_SENSIRION
   #include "sensirion.h"
 #endif
-#if PL_HAS_RADIO
+#if PL_CONFIG_USE_NORDIC_RADIO
   #include "RNet/Radio.h"
 #endif
 
@@ -150,7 +150,7 @@ static void OledTask(void *pv) {
       vTaskDelay(pdMS_TO_TICKS(1000));
       ms += 1000;
   #endif
-  #if PL_HAS_RADIO
+  #if PL_CONFIG_USE_NORDIC_RADIO
       if (RADIO_IsSane()==ERR_OK) {
         Show1Liner((unsigned char*)"nRF ok");
       } else {
