@@ -137,20 +137,24 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #if McuLib_CONFIG_CPU_IS_ARM_CORTEX_M
   McuArmTools_ParseCommand,
 #endif
+#if McuLog_CONFIG_IS_ENABLED
+  McuLog_ParseCommand,
+#endif
+#if McuFlash_CONFIG_IS_ENABLED
+  McuFlash_ParseCommand,
+#endif
+#if PL_CONFIG_USE_MININI
+  McuMinINI_ParseCommand,
+  ini_ParseCommand,
+#endif
 #if PL_CONFIG_USE_LEDS
   Leds_ParseCommand,
 #endif
 #if PL_CONFIG_USE_BLINKY
   Blinky_ParseCommand,
 #endif
-#if McuLog_CONFIG_IS_ENABLED
-  McuLog_ParseCommand,
-#endif
 #if PL_CONFIG_USE_IDENTIFY
   ID_ParseCommand,
-#endif
-#if McuFlash_CONFIG_IS_ENABLED
-  McuFlash_ParseCommand,
 #endif
 #if PL_CONFIG_USE_MOTORS
   Motor_ParseCommand,
@@ -178,10 +182,6 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #endif
 #if PL_CONFIG_LINE_FOLLOWING
   LineFollow_ParseCommand,
-#endif
-#if PL_CONFIG_USE_MININI
-  McuMinINI_ParseCommand,
-  ini_ParseCommand,
 #endif
 #if MCU_LIS2DH_CONFIG_IS_ENABLED
   McuLis2dh_ParseCommand,
