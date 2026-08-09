@@ -94,41 +94,45 @@ extern "C" {
 #endif
 
 #ifndef PL_CONFIG_USE_MCUFLASH
-  #define PL_CONFIG_USE_MCUFLASH          (1)
+  #define PL_CONFIG_USE_MCUFLASH            (1)
 #endif
-#define PL_CONFIG_USE_MININI            (1 && PL_CONFIG_USE_MCUFLASH)
+#define PL_CONFIG_USE_MININI                (1 && PL_CONFIG_USE_MCUFLASH)
 
 #ifndef PL_CONFIG_USE_TINY_USB
-  #define PL_CONFIG_USE_TINY_USB          (1 && CONFIG_PLATFORM_IS_ZUMO_2025) /*!< if using tinyusb stack */
+  #define PL_CONFIG_USE_TINY_USB            (1 && CONFIG_PLATFORM_IS_ZUMO_2025) /*!< if using tinyusb stack */
 #endif
 #ifndef PL_CONFIG_USE_TUD_CDC
-  #define PL_CONFIG_USE_TUD_CDC           (1 && PL_CONFIG_USE_TINY_USB) /* tinyUSB CDC device with McuShellCdcDevice */
+  #define PL_CONFIG_USE_TUD_CDC             (1 && PL_CONFIG_USE_TINY_USB) /* tinyUSB CDC device with McuShellCdcDevice */
 #endif
 #ifndef PL_CONFIG_USE_SHELL_CDC
-  #define PL_CONFIG_USE_SHELL_CDC         (0) /* if using CDC as shell interface */
+  #define PL_CONFIG_USE_SHELL_CDC           (0) /* if using CDC as shell interface */
 #endif
 #ifndef PL_CONFIG_USE_SHELL_RTT
-  #define PL_CONFIG_USE_SHELL_RTT         (1 && PL_CONFIG_USE_RTT)
+  #define PL_CONFIG_USE_SHELL_RTT           (1 && PL_CONFIG_USE_RTT)
 #endif
-#define PL_CONFIG_USE_SEMIHOSTING       (0 && McuSemihost_CONFIG_IS_ENABLED) /*!< 1: enable semihosting debug output */
+
+#ifndef PL_CONFIG_USE_SEMIHOSTING
+  #define PL_CONFIG_USE_SEMIHOSTING         (0 && McuSemihost_CONFIG_IS_ENABLED) /*!< 1: enable semihosting debug output */
+#endif
 
 #ifndef PL_CONFIG_USE_I2C
-  #define PL_CONFIG_USE_I2C               (1) /* if using I2C e.g. for accelerometer */
+  #define PL_CONFIG_USE_I2C                 (1) /* if using I2C e.g. for accelerometer */
 #endif
+
 #ifndef PL_CONFIG_USE_ESP32
-  #define PL_CONFIG_USE_ESP32           (0 && McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC)
+  #define PL_CONFIG_USE_ESP32               (0 && McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC)
 #endif
 
 #ifndef PL_CONFIG_USE_NORDIC_RADIO
-  #define PL_CONFIG_USE_NORDIC_RADIO        (0)
+  #define PL_CONFIG_USE_NORDIC_RADIO        (1 && (CONFIG_PLATFORM_IS_ZUMO_Vx || CONFIG_ESP32_IS_REMOTE)) /* using the nRF transceiver */
 #endif
 
 #ifndef PL_CONFIG_USE_REMOTE_RNET_LED
-  #define PL_CONFIG_USE_REMOTE_RNET_LED     (0 && PL_CONFIG_USE_NORDIC_RADIO && McuRNET_CONFIG_IS_ENABLED && PL_CONFIG_USE_LEDS)
+  #define PL_CONFIG_USE_REMOTE_RNET_LED     (1 && PL_CONFIG_USE_NORDIC_RADIO && McuRNET_CONFIG_IS_ENABLED && PL_CONFIG_USE_LEDS)
 #endif
 
 #ifndef PL_CONFIG_USE_TIME_DATE
-  #define PL_CONFIG_USE_TIME_DATE           (1)
+  #define PL_CONFIG_USE_TIME_DATE           (1) /* having time and date available */
 #endif
 
 /*!
