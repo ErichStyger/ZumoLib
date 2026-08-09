@@ -3,12 +3,11 @@
  * \brief Module to handle a LED with RNet
  * \author Erich Styger, erich.styger@hslu.ch
  * \license SPDX-License-Identifier: BSD-3-Clause
- * This module implements the catch-the-flag extensions.
  */
 
 #include "platform.h"
-#if PL_CONFIG_USE_REMOTE_ROBO_LED
-#include "roboLED.h"
+#if PL_CONFIG_USE_REMOTE_RNET_LED
+#include "remoteRnetLED.h"
 #include "RNet_App.h"
 #include "McuShell.h"
 #include "McuLog.h"
@@ -17,7 +16,7 @@
 
 static bool LedIsOn(void) {
 #if McuLib_CONFIG_CPU_IS_ESP32
-  return Leds_Get(LEDS_CONFIG_HAS_RED_LED);
+  return Leds_Get(LEDS_RED);
 #else /* robot */
   return Leds_Get(LEDS_LEFT_RED);
 #endif
@@ -39,7 +38,7 @@ static void SetLed(bool on) {
 #endif
 }
 
-uint8_t RoboLED_HandleRemoteRxMessage(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RNWK_ShortAddrType srcAddr, bool *handled, RPHY_PacketDesc *packet) {
+uint8_t RemoteRnetLED_HandleRemoteRxMessage(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RNWK_ShortAddrType srcAddr, bool *handled, RPHY_PacketDesc *packet) {
   RAPP_MSG_DataIDType msgID;
   uint32_t msgValue;
   uint16_t value16;
@@ -104,39 +103,41 @@ uint8_t RoboLED_HandleRemoteRxMessage(RAPP_MSG_Type type, uint8_t size, uint8_t 
 }
 
 static uint8_t PrintStatus(const McuShell_StdIOType *io) {
+  McuShell_SendStatusStr((unsigned char*)"remoteled", (unsigned char*)"Remote RNet LED status\r\n", io->stdOut);
+  McuShell_SendStatusStr((unsigned char*)"  local LED", LedIsOn()?(unsigned char*)"on\r\n":(unsigned char*)"off\r\n", io->stdOut);
   return ERR_OK;
 }
 
 static uint8_t PrintHelp(const McuShell_StdIOType *io) {
-  McuShell_SendHelpStr((unsigned char*)"roboled", (unsigned char*)"Group of remote LED commands\r\n", io->stdOut);
+  McuShell_SendHelpStr((unsigned char*)"remoteled", (unsigned char*)"Group of remote RNet LED commands\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows help or status\r\n", io->stdOut);
-  McuShell_SendHelpStr((unsigned char*)"  get led", (unsigned char*)"Query LED state\r\n", io->stdOut);
-  McuShell_SendHelpStr((unsigned char*)"  set led on|off", (unsigned char*)"Set LED state\r\n", io->stdOut);
+  McuShell_SendHelpStr((unsigned char*)"  get led", (unsigned char*)"Query remote LED state with RNet\r\n", io->stdOut);
+  McuShell_SendHelpStr((unsigned char*)"  set led on|off", (unsigned char*)"Set remot LED with RNet\r\n", io->stdOut);
   return ERR_OK;
 }
 
-uint8_t RoboLED_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell_StdIOType *io) {
-  if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_HELP)==0 || McuUtility_strcmp((char*)cmd, (char*)"roboled help")==0) {
+uint8_t RemoteRnetLED_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell_StdIOType *io) {
+  if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_HELP)==0 || McuUtility_strcmp((char*)cmd, (char*)"remoteled help")==0) {
     *handled = TRUE;
     return PrintHelp(io);
-  } else if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_STATUS)==0 || McuUtility_strcmp((char*)cmd, (char*)"roboled status")==0) {
+  } else if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_STATUS)==0 || McuUtility_strcmp((char*)cmd, (char*)"remoteled status")==0) {
     *handled = TRUE;
     return PrintStatus(io);
     return RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_QUERY_VALUE, RAPP_MSG_TYPE_DATA_ID_BUTTON, 0, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NONE);
-  } else if (McuUtility_strcmp((char*)cmd, (char*)"roboled get led")==0) {
+  } else if (McuUtility_strcmp((char*)cmd, (char*)"remoteled get led")==0) {
     *handled = true;
     return RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_QUERY_VALUE, RAPP_MSG_TYPE_DATA_ID_LED, 0, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NONE);
-  } else if (McuUtility_strcmp((char*)cmd, (char*)"roboled set led on")==0) {
+  } else if (McuUtility_strcmp((char*)cmd, (char*)"remoteled set led on")==0) {
     *handled = true;
     return RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_REQUEST_SET_VALUE, RAPP_MSG_TYPE_DATA_ID_LED, 1, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NONE);
-  } else if (McuUtility_strcmp((char*)cmd, (char*)"roboled set led off")==0) {
+  } else if (McuUtility_strcmp((char*)cmd, (char*)"remoteled set led off")==0) {
     *handled = true;
     return RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_REQUEST_SET_VALUE, RAPP_MSG_TYPE_DATA_ID_LED, 0, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NONE);
   }
   return ERR_OK;
 }
 
-void RobotLED_Init(void) {
+void RemoteRnetLED_Init(void) {
 }
 
-#endif /* PL_CONFIG_USE_REMOTE_ROBO_LED */
+#endif /* PL_CONFIG_USE_REMOTE_RNET_LED */

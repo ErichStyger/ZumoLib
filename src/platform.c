@@ -121,8 +121,8 @@
 #if PL_CONFIG_USE_ESP2ROBOT
   #include "esp2robot.h"
 #endif
-#if PL_CONFIG_USE_REMOTE_ROBO_LED
-  #include "roboLED.h"
+#if PL_CONFIG_USE_REMOTE_RNET_LED
+  #include "remoteRnetLED.h"
 #endif
 
 #if PL_CONFIG_USE_ESP32
@@ -292,8 +292,8 @@ void Platform_Init(void) {
 #if PL_CONFIG_USE_ESP2ROBOT
   Esp2robot_Init();
 #endif
-#if PL_CONFIG_USE_REMOTE_ROBO_LED
-  RobotLED_Init();
+#if PL_CONFIG_USE_REMOTE_RNET_LED
+  RemoteRnetLED_Init();
 #endif
 #if PL_CONFIG_USE_ROBOT_TO_ESP
   RobotToEsp_Init();

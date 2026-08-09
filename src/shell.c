@@ -123,8 +123,8 @@
 #if PL_CONFIG_USE_ESP2ROBOT
   #include "esp2robot.h"
 #endif
-#if PL_CONFIG_USE_REMOTE_ROBO_LED
-  #include "roboLED.h"
+#if PL_CONFIG_USE_REMOTE_RNET_LED
+  #include "remoteRnetLED.h"
 #endif
 #if PL_CONFIG_USE_ROBOT_TO_ESP
   #include "robotToEsp.h"
@@ -231,8 +231,8 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #if PL_CONFIG_USE_ESP2ROBOT
   Esp2robot_ParseCommand,
 #endif
-#if PL_CONFIG_USE_REMOTE_ROBO_LED
-  RoboLED_ParseCommand,
+#if PL_CONFIG_USE_REMOTE_RNET_LED
+  RemoteRnetLED_ParseCommand,
 #endif
 #if PL_CONFIG_USE_ROBOT_TO_ESP
   RobotToEsp_ParseCommand,
