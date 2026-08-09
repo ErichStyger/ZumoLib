@@ -4,6 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+/**
+ * \file
+ * \brief Blinky LED task interface.
+ * \author Erich Styger, erich.styger@hslu.ch
+ * \license SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #ifndef BLINKY_H_
 #define BLINKY_H_
 

@@ -4,6 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+/**
+ * \file
+ * \brief Sensirion temperature and humidity sensor interface.
+ * \author Erich Styger, erich.styger@hslu.ch
+ * \license SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #ifndef SENSOR_SENSIRION_H_
 #define SENSOR_SENSIRION_H_
 

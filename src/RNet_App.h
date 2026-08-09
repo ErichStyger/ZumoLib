@@ -2,7 +2,7 @@
  * \file
  * \brief This is the interface to the application entry point.
  * \author (c) 2016 Erich Styger, http://mcuoneclipse.com/
- * \note MIT License (http://opensource.org/licenses/mit-license.html)
+ * \license MIT License (http://opensource.org/licenses/mit-license.html)
  */
 
 #ifndef RNETAPP_H_

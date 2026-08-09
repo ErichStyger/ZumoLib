@@ -28,7 +28,7 @@
  * \file
  * \brief TinyUSB stack configuration for this project.
  * \author Ha Thach, Stefan Odermatt
- * \note Licensed under MIT License, see copyright block above.
+ * \license MIT License, see copyright block above.
  */
 
 /*---------------------------------------------------------------------------/

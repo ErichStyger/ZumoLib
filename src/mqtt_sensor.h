@@ -4,6 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+/**
+ * \file
+ * \brief MQTT sensor interface.
+ * \author Erich Styger, erich.styger@hslu.ch
+ * \license SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #ifndef MQTT_SENSOR_H_
 #define MQTT_SENSOR_H_
 
