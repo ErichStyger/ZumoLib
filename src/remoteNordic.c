@@ -117,12 +117,16 @@ uint32_t RemoteNordic_GetRobotBatteryVoltage_mV(void) {
 
 RemoteNordic_RobotMoveStatus_e RemoteNordic_GetRobotMoveStatus(void) {
 #if !McuLib_CONFIG_CPU_IS_ESP32
-  switch(DRV_GetMode()) {
-    case DRV_MODE_STOP: return RemoteNordic_MOVE_STATUS_STOPPED;
-    case DRV_MODE_POS:
-    case DRV_MODE_SPEED: return RemoteNordic_MOVE_STATUS_MOVING;
-    default: return RemoteNordic_MOVE_STATUS_UNKNOWN;
-  }
+  #if PL_CONFIG_USE_DRIVE
+    switch(DRV_GetMode()) {
+      case DRV_MODE_STOP: return RemoteNordic_MOVE_STATUS_STOPPED;
+      case DRV_MODE_POS:
+      case DRV_MODE_SPEED: return RemoteNordic_MOVE_STATUS_MOVING;
+      default: return RemoteNordic_MOVE_STATUS_UNKNOWN;
+    }
+  #else
+    return RemoteNordic_MOVE_STATUS_UNKNOWN;
+  #endif
 #else
   return RemoteNordic_RobotMoveStatus;
 #endif
@@ -151,12 +155,14 @@ void RemoteNordic_OnButtonEvent(uint32_t buttonBits, McuDbnc_EventKinds kind) {
 #if !McuLib_CONFIG_CPU_IS_ESP32
 static void RemoteNordic_RobotOnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
   const char *p = NULL;
+#if PL_CONFIG_USE_DRIVE
   DRV_Mode newMode = DRV_MODE_NONE;
   RAPP_MSG_DataIDType notifyID = RAPP_MSG_TYPE_DATA_ID_NONE;
   uint32_t notifyValue = 0;
   int32_t speedL = -1;
   int32_t speedR = -1;
   int32_t speed = 0;
+#endif
 
   if (event==MCUDBNC_EVENT_PRESSED) {
     switch(button) {
