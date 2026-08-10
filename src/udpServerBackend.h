@@ -8,6 +8,10 @@
  #ifndef __UDP_SERVER_BACKEND__
  #define __UDP_SERVER_BACKEND__
 
+ /*!
+  * \brief Module initialization.
+  */
 void UdpServerBackend_Init(void);
 
  #endif /* __UDP_SERVER_BACKEND__ */
+ 

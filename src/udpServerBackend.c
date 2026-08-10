@@ -6,6 +6,7 @@
  */
 
 #include "platform.h"
+#if PL_CONFIG_USE_UDP_SERVER_BACKEND
 #include "udpServerBackend.h"
 #include "McuUdpServer.h"
 #include "McuUtility.h"
@@ -76,3 +77,5 @@ static void UdpIncomingCallback(const char *rxBuffer, int rxLen, char *responseB
 void UdpServerBackend_Init(void) {
   McuUdpServer_SetIncomingCallback(UdpIncomingCallback);
 }
+
+#endif /* PL_CONFIG_USE_UDP_SERVER_BACKEND */

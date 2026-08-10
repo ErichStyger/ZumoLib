@@ -131,6 +131,13 @@ extern "C" {
   #define PL_CONFIG_USE_TIME_DATE           (1) /* having time and date available */
 #endif
 
+/*
+ * ******************************   ESP specific settings ******************************
+ */
+#ifndef PL_CONFIG_USE_UDP_SERVER_BACKEND
+  #define PL_CONFIG_USE_UDP_SERVER_BACKEND        (1 && PL_CONFIG_USE_UDP_SERVER) /* use backend and callback for UDP messages*/
+#endif
+
 /*!
  * \brief Initializes the platform and all enabled subsystems.
  */
