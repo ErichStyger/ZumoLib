@@ -357,29 +357,6 @@ static void RemoteNordic_RobotOnButtonEvent(Buttons_e button, McuDbnc_EventKinds
 }
 #endif /* !McuLib_CONFIG_CPU_IS_ESP32 */
 
-#if 0 && McuLib_CONFIG_CPU_IS_ESP32
-void RemoteNordic_HandleIncomingUdpMessage(const char *rxMsg, const char *response, size_t responseSize) {
-  unsigned char msg[McuShell_DEFAULT_SHELL_BUFFER_SIZE]; /* buffer for shell command */
-  #define MSG_ESP_PREFIX_STR   "@esp:" /* shell command for ESP shell */
-  /* For executing shell command strings, the fillowing is used: "@esp:<shell command string>!"*/
-
-  McuLog_info("handling incoming udp message '%s'", rxMsg);
-  McuUtility_strcpy((unsigned char*)response, responseSize, (unsigned char*)"OK"); /* default response */
-  /* check framing */
-  if (McuUtility_strncmp(rxMsg, MSG_ESP_PREFIX_STR, sizeof(MSG_ESP_PREFIX_STR)-1)==0) { /* check prefix */
-    size_t strLen = McuUtility_strlen(rxMsg);
-    if (rxMsg[strLen-1]=='!') { /* send to ESP32 shell */
-      /* copy first command */
-      McuUtility_strcpy(msg, sizeof(msg), (unsigned char*)(rxMsg+strlen(MSG_ESP_PREFIX_STR)));
-      msg[McuUtility_strlen((char*)msg)-1] = '\0'; /* replace '!' at the end */
-      SHELL_SendToESPAndGetResponse(msg, (unsigned char*)response, responseSize);
-    } else {
-      McuUtility_strcpy((unsigned char*)response, responseSize, (unsigned char*)"'!' missing!");
-    }
-  }
-}
-#endif /* McuLib_CONFIG_CPU_IS_ESP32 */
-
 #if McuLib_CONFIG_CPU_IS_ESP32
 void RemoteNordic_ESP32OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
 #if PL_CONFIG_HAS_LCD /* navigation button messages are handled by the LCD module and forwarded if configured as such */
@@ -544,7 +521,6 @@ static uint8_t PrintHelp(const McuShell_StdIOType *io) {
   McuShell_SendHelpStr((unsigned char*)"  get battery", (unsigned char*)"Query robot battery voltage\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  get button", (unsigned char*)"Query robot button status\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  nav <udlrc> on|off", (unsigned char*)"Send nav (up, down, left, right, center) button message\r\n", io->stdOut);
-  McuShell_SendHelpStr((unsigned char*)"", (unsigned char*)"Hint: use something like ./obj/udp_app --udp tx ESP32E_03 1234 \"@esp:<shell cmd>!\"\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  saddr <addr>", (unsigned char*)"Set RNet source address\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  daddr <addr>", (unsigned char*)"Set RNet destination address\r\n", io->stdOut);
   return ERR_OK;
