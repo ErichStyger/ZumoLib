@@ -59,7 +59,7 @@ extern "C" {
   #define PL_CONFIG_USE_TUD_CDC             (1 && PL_CONFIG_USE_TINY_USB) /* tinyUSB CDC device with McuShellCdcDevice */
 #endif
 #ifndef PL_CONFIG_USE_SHELL_CDC
-  #define PL_CONFIG_USE_SHELL_CDC           (0) /* if using CDC as shell interface */
+  #define PL_CONFIG_USE_SHELL_CDC           (1 && PL_CONFIG_IS_ROBOT) /* if using tinyusb CDC as shell interface */
 #endif
 #ifndef PL_CONFIG_USE_SHELL_RTT
   #define PL_CONFIG_USE_SHELL_RTT           (1 && PL_CONFIG_USE_RTT && PL_CONFIG_IS_ROBOT)
