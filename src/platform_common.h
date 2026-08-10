@@ -1,10 +1,3 @@
-/*
- * Copyright 2026, Erich Styger
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 /**
  * \file
  * \brief Platform configuration and feature-enable switches.
@@ -80,24 +73,27 @@ extern "C" {
 #endif
 
 #ifndef PL_CONFIG_USE_BUZZER
-  #define PL_CONFIG_USE_BUZZER            (0) /*!< 1: enable buzzer driver */
+  #define PL_CONFIG_USE_BUZZER              (0) /*!< 1: enable buzzer driver */
 #endif
 #ifndef PL_CONFIG_USE_REFLECTANCE
-  #define PL_CONFIG_USE_REFLECTANCE       (0) /*!< 1: if having line sensor */
+  #define PL_CONFIG_USE_REFLECTANCE         (0) /*!< 1: if having line sensor */
 #endif
 #ifndef PL_CONFIG_LINE_FOLLOWING
-  #define PL_CONFIG_LINE_FOLLOWING        (0 && PL_CONFIG_USE_REFLECTANCE)
+  #define PL_CONFIG_LINE_FOLLOWING          (0 && PL_CONFIG_USE_REFLECTANCE)
 #endif
-#define PL_CONFIG_USE_LINE_PID            (PL_CONFIG_USE_PID && PL_CONFIG_LINE_FOLLOWING)
+#ifndef PL_CONFIG_USE_LINE_PID
+  #define PL_CONFIG_USE_LINE_PID            (PL_CONFIG_USE_PID && PL_CONFIG_LINE_FOLLOWING)
+#endif
 #ifndef PL_CONFIG_MAZE_SOLVING
-  #define PL_CONFIG_MAZE_SOLVING          (0 && PL_CONFIG_LINE_FOLLOWING)
+  #define PL_CONFIG_MAZE_SOLVING            (0 && PL_CONFIG_LINE_FOLLOWING)
 #endif
 
 #ifndef PL_CONFIG_USE_MCUFLASH
   #define PL_CONFIG_USE_MCUFLASH            (1)
 #endif
-#define PL_CONFIG_USE_MININI                (1 && PL_CONFIG_USE_MCUFLASH)
-
+#ifndef PL_CONFIG_USE_MININI
+  #define PL_CONFIG_USE_MININI              (1 && PL_CONFIG_USE_MCUFLASH)
+#endif
 #ifndef PL_CONFIG_USE_TINY_USB
   #define PL_CONFIG_USE_TINY_USB            (1 && CONFIG_PLATFORM_IS_ZUMO_2025) /*!< if using tinyusb stack */
 #endif
