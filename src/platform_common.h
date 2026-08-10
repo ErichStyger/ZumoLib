@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-#define PL_CONFIG_DISABLE_NMI_EZPORT    (1 && CONFIG_PLATFORM_IS_ZUMO_2025) /*!< 1: disable NMI & EZPORT in startup code, because NMI/PTA4 is used on new robot board */
+#define PL_CONFIG_DISABLE_NMI_EZPORT    (1 && CONFIG_PLATFORM_IS_ZUMO_FN) /*!< 1: disable NMI & EZPORT in startup code, because NMI/PTA4 is used on new robot board */
 
 #ifndef PL_CONFIG_USE_LEDS
   #define PL_CONFIG_USE_LEDS              (1)
@@ -66,10 +66,10 @@ extern "C" {
   #define PL_CONFIG_USE_TURN              (1 && PL_CONFIG_USE_POS_PID) /*!< 1: enable turn/rotation module (requires PL_CONFIG_USE_POS_PID) */
 #endif
 #ifndef PL_CONFIG_USE_IDENTIFY
-  #define PL_CONFIG_USE_IDENTIFY          (1 && CONFIG_PLATFORM_IS_ZUMO_Vx) /*!< Used on Vx robots for hardware identification */
+  #define PL_CONFIG_USE_IDENTIFY          (1 && CONFIG_PLATFORM_IS_ZUMO_FX) /*!< Used on Vx robots for hardware identification */
 #endif
 #ifndef PL_CONFIG_USE_ADOPT_HW
-  #define PL_CONFIG_USE_ADOPT_HW          (1 && CONFIG_PLATFORM_IS_ZUMO_Vx) /*!< Used on Vx robots for hardware adjustments */
+  #define PL_CONFIG_USE_ADOPT_HW          (1 && CONFIG_PLATFORM_IS_ZUMO_FX) /*!< Used on Vx robots for hardware adjustments */
 #endif
 
 #ifndef PL_CONFIG_USE_BUZZER
@@ -95,7 +95,7 @@ extern "C" {
   #define PL_CONFIG_USE_MININI              (1 && PL_CONFIG_USE_MCUFLASH)
 #endif
 #ifndef PL_CONFIG_USE_TINY_USB
-  #define PL_CONFIG_USE_TINY_USB            (1 && CONFIG_PLATFORM_IS_ZUMO_2025) /*!< if using tinyusb stack */
+  #define PL_CONFIG_USE_TINY_USB            (1 && CONFIG_PLATFORM_IS_ZUMO_FN) /*!< if using tinyusb stack */
 #endif
 #ifndef PL_CONFIG_USE_TUD_CDC
   #define PL_CONFIG_USE_TUD_CDC             (1 && PL_CONFIG_USE_TINY_USB) /* tinyUSB CDC device with McuShellCdcDevice */
@@ -120,7 +120,7 @@ extern "C" {
 #endif
 
 #ifndef PL_CONFIG_USE_NORDIC_RADIO
-  #define PL_CONFIG_USE_NORDIC_RADIO        (1 && (CONFIG_PLATFORM_IS_ZUMO_Vx || CONFIG_ESP32_IS_REMOTE)) /* using the nRF transceiver */
+  #define PL_CONFIG_USE_NORDIC_RADIO        (1 && (CONFIG_PLATFORM_IS_ZUMO_FX || CONFIG_ESP32_IS_REMOTE)) /* using the nRF transceiver */
 #endif
 
 #ifndef PL_CONFIG_USE_REMOTE_RNET_LED

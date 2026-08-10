@@ -14,7 +14,7 @@
 #ifndef LEDS_CONFIG_H_
 #define LEDS_CONFIG_H_
 
-#if CONFIG_PLATFORM_IS_ZUMO_2025
+#if CONFIG_PLATFORM_IS_ZUMO_FN
   #define LEDS_CONFIG_HAS_LEFT_RED_LED  (1)
   #define LEDS_CONFIG_LEFT_RED_GPIO      GPIOB /*!< GPIO peripheral for left led pin */
   #define LEDS_CONFIG_LEFT_RED_PORT      PORTB /*!< PORT peripheral for left led pin */
@@ -30,7 +30,7 @@
   #define LEDS_CONFIG_ENABLE_CLOCK()    /*!< Enables port clock used by left and right led pin */ \
     CLOCK_EnableClock(kCLOCK_PortB); \
     CLOCK_EnableClock(kCLOCK_PortE);
-#elif CONFIG_PLATFORM_IS_ZUMO_Vx
+#elif CONFIG_PLATFORM_IS_ZUMO_FX
   #define LEDS_CONFIG_HAS_LEFT_RED_LED  (1)
   #define LEDS_CONFIG_LEFT_RED_GPIO      GPIOA /*!< GPIO peripheral for left led pin */
   #define LEDS_CONFIG_LEFT_RED_PORT      PORTA /*!< PORT peripheral for left led pin */

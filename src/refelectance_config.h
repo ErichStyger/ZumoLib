@@ -33,7 +33,7 @@
       CLOCK_EnableClock(kCLOCK_PortC);
 #endif
 
-#if CONFIG_PLATFORM_IS_ZUMO_2025
+#if CONFIG_PLATFORM_IS_ZUMO_FN
   #define REFLECTANCE_CONFIG_NOF_SENSORS  (4) /*!< number of IR sensors*/
   #define REFLECTANCE_CONFIG_SENSOR_PINS()  \
     {.gpio=GPIOD, .port=PORTD, .pin=7},     \
@@ -56,7 +56,7 @@
 
   #define REF_SENSOR_TIMEOUT_US  500    /* after this time, consider no reflection (black). Must be smaller than the timeout period of the RefCnt timer! */
 
-#elif CONFIG_PLATFORM_IS_ZUMO_Vx
+#elif CONFIG_PLATFORM_IS_ZUMO_FX
   #define REFLECTANCE_CONFIG_NOF_SENSORS  (6) /*!< number of IR sensors*/
   #define REFLECTANCE_CONFIG_SENSOR_PINS()  \
     {.gpio=GPIOD, .port=PORTD, .pin=2},     \

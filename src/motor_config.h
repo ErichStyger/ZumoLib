@@ -14,7 +14,7 @@
 #ifndef MOTOR_CONFIG_H_
 #define MOTOR_CONFIG_H_
 
-#if CONFIG_PLATFORM_IS_ZUMO_2025
+#if CONFIG_PLATFORM_IS_ZUMO_FN
   #define MOTOR_PINS_DIR_LEFT_GPIO      GPIOE /*!< Left motor direction GPIO peripheral */
   #define MOTOR_PINS_DIR_LEFT_PORT      PORTE /*!< Left motor direction PORT peripheral */
   #define MOTOR_PINS_DIR_LEFT_PIN       6u    /*!< Left motor direction pin */
@@ -50,7 +50,7 @@
   #define MOTOR_PINS_MODE_ENABLE_CLOCK()    /*!< Enables clock for MODE pin port */ \
     CLOCK_EnableClock(kCLOCK_PortC);
 
-#elif CONFIG_PLATFORM_IS_ZUMO_Vx
+#elif CONFIG_PLATFORM_IS_ZUMO_FX
 
   #define MOTOR_PINS_DIR_LEFT_GPIO      GPIOC /*!< Left motor direction GPIO peripheral */
   #define MOTOR_PINS_DIR_LEFT_PORT      PORTC /*!< Left motor direction PORT peripheral */

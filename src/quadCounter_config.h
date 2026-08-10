@@ -19,14 +19,14 @@
 #endif
 
 #ifndef QuadCounter_SWAP_PINS_AT_RUNTIME
-  #define QuadCounter_SWAP_PINS_AT_RUNTIME    (1 && CONFIG_PLATFORM_IS_ZUMO_Vx) /*!< 1: C1 and C2 can be swapped at runtime */
+  #define QuadCounter_SWAP_PINS_AT_RUNTIME    (1 && CONFIG_PLATFORM_IS_ZUMO_FX) /*!< 1: C1 and C2 can be swapped at runtime */
 #endif
 
 #ifndef QuadCounter_PARSE_COMMAND_ENABLED
   #define QuadCounter_PARSE_COMMAND_ENABLED   1  /*!< 1: ParseCommand() method is present */
 #endif
 
-#if CONFIG_PLATFORM_IS_ZUMO_2025
+#if CONFIG_PLATFORM_IS_ZUMO_FN
   /*! Left: HS_MOT_L_A PTA13, HS_MOT_L_B PTA12; Right: HS_MOT_R_A PTB19, HS_MOT_R_B PTB18 */
   #define QUADCOUNTER_CONFIG_LEFT_A_GPIO    GPIOA
   #define QUADCOUNTER_CONFIG_LEFT_A_PORT    PORTA
@@ -47,7 +47,7 @@
     CLOCK_EnableClock(kCLOCK_PortA);        \
     CLOCK_EnableClock(kCLOCK_PortB);
 
-#elif CONFIG_PLATFORM_IS_ZUMO_Vx
+#elif CONFIG_PLATFORM_IS_ZUMO_FX
   /*! Left: PTC16/PTC17, Right: PTC10/PTC11 */
   #define QUADCOUNTER_CONFIG_LEFT_A_GPIO    GPIOC
   #define QUADCOUNTER_CONFIG_LEFT_A_PORT    PORTC

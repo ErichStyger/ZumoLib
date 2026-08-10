@@ -14,7 +14,7 @@
 #ifndef BUTTONS_CONFIG_H_
 #define BUTTONS_CONFIG_H_
 
-#if CONFIG_PLATFORM_IS_ZUMO_2025
+#if CONFIG_PLATFORM_IS_ZUMO_FN
   #define BUTTONS_CONFIG_PINS_USER_GPIO      GPIOE /*!< GPIO peripheral for user button */
   #define BUTTONS_CONFIG_PINS_USER_PORT      PORTE /*!< PORT peripheral for user button */
   #define BUTTONS_CONFIG_PINS_USER_PIN       26u   /*!< Pin number for user button */
@@ -25,7 +25,7 @@
   #define BUTTONS_CONFIG_INTERRUPT_LINE      PORTE_IRQn
   #define BUTTONS_CONFIG_INTERRUPT_HANDLER   PORTE_IRQHandler
 
-#elif CONFIG_PLATFORM_IS_ZUMO_Vx
+#elif CONFIG_PLATFORM_IS_ZUMO_FX
   #define BUTTONS_CONFIG_PINS_USER_GPIO      GPIOA /*!< GPIO peripheral for user button */
   #define BUTTONS_CONFIG_PINS_USER_PORT      PORTA /*!< PORT peripheral for user button */
   #define BUTTONS_CONFIG_PINS_USER_PIN       14u   /*!< Pin number for user button */

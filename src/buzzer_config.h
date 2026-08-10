@@ -14,14 +14,14 @@
 #ifndef BUZZER_CONFIG_H_
 #define BUZZER_CONFIG_H_
 
-#if CONFIG_PLATFORM_IS_ZUMO_2025
+#if CONFIG_PLATFORM_IS_ZUMO_FN
   #define BUZZER_PINS_USER_GPIO      GPIOC /*!< GPIO peripheral for buzzer pin */
   #define BUZZER_PINS_USER_PORT      PORTC /*!< PORT peripheral for buzzer pin */
   #define BUZZER_PINS_USER_PIN       1u    /*!< Pin number for buzzer */
 
   #define BUZZER_CONFIG_ENABLE_CLOCK()    /*!< Enables port clock used by buzzer pin */ \
     CLOCK_EnableClock(kCLOCK_PortC);
-#elif CONFIG_PLATFORM_IS_ZUMO_Vx
+#elif CONFIG_PLATFORM_IS_ZUMO_FX
   #define BUZZER_PINS_USER_GPIO      GPIOC /*!< GPIO peripheral for buzzer pin (PTC3, low-active) */
   #define BUZZER_PINS_USER_PORT      PORTC /*!< PORT peripheral for buzzer pin */
   #define BUZZER_PINS_USER_PIN       3u    /*!< Pin number for buzzer */
