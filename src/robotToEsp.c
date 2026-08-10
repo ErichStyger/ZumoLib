@@ -49,45 +49,6 @@ bool RobotToEsp_GatewayTxToESP(unsigned char *pch) {
     return true;
   }
 }
-
-#if 0 /* code on ESP? */
-/* ----------------- buffer handling for shell messages sent to ESP32 */
-static unsigned char *esp_io_buf; /* pointer to buffer */
-static size_t esp_io_buf_size; /* size of buffer */
-
-static void esp_io_buf_SendChar(unsigned char ch) {
-  McuUtility_chcat(esp_io_buf, esp_io_buf_size, ch);
-}
-
-static void esp_io_buf_ReadChar(uint8_t *c) {
-  *c = '\0';
-}
-
-static bool esp_io_buf_CharPresent(void) {
-  return false;
-}
-
-static McuShell_ConstStdIOType esp_stdio = {
-  .stdIn = (McuShell_StdIO_In_FctType)esp_io_buf_ReadChar,
-  .stdOut = (McuShell_StdIO_OutErr_FctType)esp_io_buf_SendChar,
-  .stdErr = (McuShell_StdIO_OutErr_FctType)esp_io_buf_SendChar,
-  .keyPressed = esp_io_buf_CharPresent, /* if input is not empty */
-#if McuShell_CONFIG_ECHO_ENABLED
-  .echoEnabled = false, /* echo enabled for idf.py monitor */
-#endif
-};
-
-void RobotToEsp_SendToESPAndGetResponse(const unsigned char *msg, unsigned char *response, size_t responseSize) {
-  esp_io_buf = response;
-  esp_io_buf_size = responseSize;
-  esp_io_buf[0] = '\0'; /* initialize buffer */
-  McuLog_info("Sending to ESP Shell: %s", msg);
-  McuShell_ParseWithCommandTableExt(msg, &esp_stdio, CmdParserTable, true); /* send to ESP32 shell */
-  if (response[0]=='\0') { /* empty response? add a default */
-    McuUtility_strcpy(response, responseSize, (unsigned char*)"OK"); /* default response */
-  }
-}
-#endif
 /* ----------------------------------------------------------------------*/
 /* I/O to handle forwarded characters from the ESP for scanning by the robot for commands */
 static void dummyReadChar(uint8_t *c) {
