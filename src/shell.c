@@ -309,8 +309,6 @@ uint8_t Shell_ParseCommandIO(const unsigned char *command, McuShell_ConstStdIOTy
   if (io==NULL) { /* use a default */
 #if PL_CONFIG_USE_SHELL_UART
     io = &McuShellUart_stdio;
-#elif PL_CONFIG_USE_USB_CDC
-    io = &cdc_stdio;
 #elif PL_CONFIG_USE_RTT
     io = &McuRTT_stdio;
 #else
