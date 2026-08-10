@@ -112,7 +112,7 @@
   #include "McuSPI.h"
   #include "RNet_App.h"
 #endif
-#if PL_CONFIG_USE_ROBOT_TO_ESP
+#if PL_CONFIG_USE_ROBOT2ESP
   #include "robotToEsp.h"
 #endif
 #if PL_CONFIG_USE_REMOTE_NORDIC
@@ -225,9 +225,6 @@ void Platform_Init(void) {
     McuESP32_SetUsbFlushCallback(McuShellCdcDevice_Flush); /* which callback to call to flush the USB outgoing data */
     McuESP32_SetProgrammingCallback(Esp32ProgrammingCallback); /* callback to reduce system load for improved USB CDC performance */
   #endif
-  #if PL_CONFIG_USE_ROBOT_TO_ESP
-    McuESP32_SetRxFromESPStdio(RobotToEsp_GetIOforEspRx()); /* assign optional I/O for incoming ESP data */
-  #endif
 #endif
 #if PL_CONFIG_USE_IDENTIFY
   ID_Init();
@@ -295,7 +292,7 @@ void Platform_Init(void) {
 #if PL_CONFIG_USE_REMOTE_RNET_LED
   RemoteRnetLED_Init();
 #endif
-#if PL_CONFIG_USE_ROBOT_TO_ESP
+#if PL_CONFIG_USE_ROBOT2ESP
   RobotToEsp_Init();
 #endif
 #if PL_CONFIG_USE_ADOPT_HW

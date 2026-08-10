@@ -7,7 +7,7 @@
  */
 
 #include "platform.h"
-#if PL_CONFIG_USE_ROBOT_TO_ESP
+#if PL_CONFIG_USE_ROBOT2ESP
 #include "robotToEsp.h"
 #include "McuRTOS.h"
 #include "McuUtility.h"
@@ -230,6 +230,8 @@ void RobotToEsp_Init(void) {
     for(;;){} /* out of memory? */
   }
   vQueueAddToRegistry(RobotToEsp_TxToESP_Queue, "RemoteTxToESPQueue");
+  
+  McuESP32_SetRxFromESPStdio(RobotToEsp_GetIOforEspRx()); /* assign optional I/O for incoming ESP data */
 }
 
-#endif /* PL_CONFIG_USE_ROBOT_TO_ESP */
+#endif /* PL_CONFIG_USE_ROBOT2ESP */

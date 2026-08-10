@@ -9,7 +9,7 @@
 #define __ROBOT_TO_ESP_H_
 
 #include "platform.h"
-#if PL_CONFIG_USE_ROBOT_TO_ESP
+#if PL_CONFIG_USE_ROBOT2ESP
 #include "McuShell.h"
 
 
@@ -37,6 +37,6 @@ void RobotToEsp_Deinit(void);
 /*! \brief Initialization of the module */
 void RobotToEsp_Init(void);
 
-#endif /* PL_CONFIG_USE_ROBOT_TO_ESP */
+#endif /* PL_CONFIG_USE_ROBOT2ESP */
 
 #endif /* __ROBOT_TO_ESP_H_ */

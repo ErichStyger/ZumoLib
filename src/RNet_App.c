@@ -22,7 +22,7 @@
 #if RNET_CONFIG_REMOTE_STDIO
   #include "RNet/RStdIO.h"
 #endif
-#if PL_CONFIG_USE_ROBOT_TO_ESP
+#if PL_CONFIG_USE_ROBOT2ESP
   #include "robotToEsp.h"
 #endif
 #if PL_CONFIG_USE_REMOTE_NORDIC
