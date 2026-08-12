@@ -119,10 +119,7 @@ static void AppTask(void *pv) {
 }
 #endif
 
-#if PL_CONFIG_IS_ROBOT
-void Application_Run(void) {
-  __asm volatile("cpsid i"); /* disable all interrupts, they get enabled at scheduler start */
-  Platform_Init();
+void Application_Init(void) {
 #if PL_CONFIG_USE_APP_TASK
   if (xTaskCreate(AppTask, "App", 1024/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS) {
     for(;;){} /* error */
@@ -130,13 +127,13 @@ void Application_Run(void) {
 #endif
 }
 
+#if PL_CONFIG_IS_ROBOT
 void Application_Run(void) {
   __asm volatile("cpsid i"); /* disable all interrupts, they get enabled at scheduler start */
   Platform_Init();
-
 #if McuLib_CONFIG_SDK_USE_FREERTOS
   vTaskStartScheduler();
 #endif
-  for(;;) {}
+  for(;;) {} /* should not get here */
 }
 #endif /* PL_CONFIG_IS_ROBOT */
