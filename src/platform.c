@@ -130,7 +130,7 @@
 #endif
 
 /* ESP specifics */
-#elif PL_CONFIG_USE_WIFI
+#if PL_CONFIG_USE_WIFI
   #include "McuWiFi.h"
 #endif
   #include "McuRTOS.h"

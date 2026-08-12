@@ -55,16 +55,16 @@ typedef enum {
 static AppStateType appState = APP_STATE_STARTUP;
 
 #if PL_CONFIG_USE_REFLECTANCE
-bool APP_StateIsCalibrating(void) {
+bool Application_StateIsCalibrating(void) {
   return appState == APP_STATE_CALIBRATE;
 }
 
-void APP_StateStartCalibrate(void) {
+void Application_StateStartCalibrate(void) {
   REF_CalibrateStartStop();
   appState = APP_STATE_CALIBRATE;
 }
 
-void APP_StateStopCalibrate(void) {
+void Application_StateStopCalibrate(void) {
   appState = APP_STATE_IDLE;
   REF_CalibrateStartStop();
 }

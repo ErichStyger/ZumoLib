@@ -724,7 +724,7 @@ uint8_t REF_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell
     return ERR_OK;
   } else if (McuUtility_strcmp((char*)cmd, "ref calib start")==0) {
     if (refState==REF_STATE_NOT_CALIBRATED || refState==REF_STATE_READY) {
-      APP_StateStartCalibrate();
+      Application_StateStartCalibrate();
     } else {
       McuShell_SendStr((unsigned char*)"ERROR: cannot start calibration, must not be calibrating or be ready.\r\n", io->stdErr);
       return ERR_FAILED;
@@ -733,7 +733,7 @@ uint8_t REF_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell
     return ERR_OK;  
   } else if (McuUtility_strcmp((char*)cmd, "ref calib stop")==0) {
     if (refState==REF_STATE_CALIBRATING) {
-      APP_StateStopCalibrate();
+      Application_StateStopCalibrate();
     } else {
       McuShell_SendStr((unsigned char*)"ERROR: can only stop if calibrating.\r\n", io->stdErr);
       return ERR_FAILED;
