@@ -17,6 +17,7 @@
 #include "McuLog.h"
 #include "McuRTOS.h"
 #include "McuWait.h"
+#include "McuButton.h"
 #if configUSE_TIMERS
   #include "FreeRtosTimer.h"
 #endif
