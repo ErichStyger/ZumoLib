@@ -128,6 +128,12 @@ void Application_Run(void) {
     for(;;){} /* error */
   }
 #endif
+}
+
+void Application_Run(void) {
+  __asm volatile("cpsid i"); /* disable all interrupts, they get enabled at scheduler start */
+  Platform_Init();
+
 #if McuLib_CONFIG_SDK_USE_FREERTOS
   vTaskStartScheduler();
 #endif
