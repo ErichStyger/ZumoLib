@@ -1,6 +1,5 @@
 /*
- * Copyright 2026 Erich Styger
- * All rights reserved.
+ * Copyright (c) 2019-2026, Erich Styger
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -17,7 +16,6 @@
 #include "McuLED.h"
 #include "McuLog.h"
 #include "McuRTOS.h"
-#include "McuRTT.h"
 #include "McuWait.h"
 #if configUSE_TIMERS
   #include "FreeRtosTimer.h"
@@ -33,8 +31,22 @@
 #if PL_CONFIG_USE_SHELL_UART
   #include "McuShellUart.h"
 #endif
+#if PL_CONFIG_USE_RTT
+  #include "McuRTT.h"
+#endif
 #if PL_CONFIG_USE_SHELL
   #include "shell.h"
+#endif
+#if PL_CONFIG_USE_TINY_USB
+  #include "usb/usb_task.h"
+  #include "usb/usb_msc.h"
+  #include "usb/usb_cdc.h"
+#endif
+#if PL_CONFIG_USE_SHELL_CDC
+  #include "McuShellCdcDevice.h"
+#endif
+#if PL_CONFIG_USE_LEDS
+  #include "leds.h"
 #endif
 #if PL_CONFIG_USE_SEMIHOSTING
   #include "McuSemihost.h"
@@ -45,6 +57,18 @@
 #if PL_CONFIG_USE_DEBOUNCE
   #include "debounce.h"
 #endif
+#if PL_CONFIG_USE_MCUFLASH
+  #include "McuFlash.h"
+#endif
+#if PL_CONFIG_USE_MININI
+  #include "minIni/McuMinINI.h"
+#endif
+#if PL_CONFIG_USE_I2C
+  #include "McuGenericI2C.h"
+  #include "McuI2cLib.h"
+#endif
+
+/* robot specifics */
 #if PL_CONFIG_USE_MOTORS
   #include "motor.h"
 #endif
@@ -69,34 +93,14 @@
 #if PL_CONFIG_USE_REFLECTANCE
   #include "reflectance.h"
 #endif
-#if PL_CONFIG_USE_MCUFLASH
-  #include "McuFlash.h"
-#endif
 #if PL_CONFIG_LINE_FOLLOWING
   #include "lineFollow.h"
 #endif
 #if PL_CONFIG_MAZE_SOLVING
   #include "maze.h"
 #endif
-#if PL_CONFIG_USE_MININI
-  #include "minIni/McuMinINI.h"
-#endif
-#if PL_CONFIG_USE_TUD_CDC
-  #include "usb/usb_cdc.h"
-#endif
-#if PL_CONFIG_USE_TINY_USB
-  #include "usb/usb_task.h"
-  #include "usb/usb_msc.h"
-#endif
-#if PL_CONFIG_USE_SHELL_CDC
-  #include "McuShellCdcDevice.h"
-#endif
 #if PL_CONFIG_USE_ESP32
   #include "McuESP32.h"
-#endif
-#if PL_CONFIG_USE_I2C
-  #include "McuGenericI2C.h"
-  #include "McuI2cLib.h"
 #endif
 #if PL_CONFIG_USE_IDENTIFY
   #include "identify.h"
@@ -104,7 +108,7 @@
 #if PL_CONFIG_USE_ADOPT_HW
   #include "adaptToHW.h"
 #endif
-#include "leds.h"
+
 #if PL_CONFIG_USE_BLINKY
   #include "blinky.h"
 #endif
@@ -123,6 +127,16 @@
 #endif
 #if PL_CONFIG_USE_REMOTE_RNET_LED
   #include "remoteRnetLED.h"
+#endif
+
+/* ESP specifics */
+#elif PL_CONFIG_USE_WIFI
+  #include "McuWiFi.h"
+#endif
+  #include "McuRTOS.h"
+#if McuLib_CONFIG_CPU_IS_ESP32
+	#include "McuEsp32Mac.h"
+	#include "nvs_flash.h"
 #endif
 #if PL_CONFIG_USE_ESP_IDENTIFY
   #include "esp32_identify.h"
