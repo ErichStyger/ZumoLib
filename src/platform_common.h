@@ -175,7 +175,7 @@ extern "C" {
   #define PL_CONFIG_USE_WIFI                (1 && PL_CONFIG_IS_ESP32) /*!< 1: using WiFi functionality */
 #endif
 #ifndef PL_CONFIG_USE_ESP_IDENTIFY
-  #define PL_CONFIG_USE_ESP_IDENTIFY        (1 && PL_CONFIG_USE_WIFI) /*!< used to identify MAC, needed for EEE network */
+  #define PL_CONFIG_USE_ESP_IDENTIFY        (0 && PL_CONFIG_USE_WIFI) /*!< used to identify MAC, needed for EEE network */
 #endif
 #ifndef PL_CONFIG_USE_PING
   #define PL_CONFIG_USE_PING                (0 && PL_CONFIG_USE_WIFI && MCU_PING_CONFIG_ENABLED) /*!< 1: using ping shell command */
