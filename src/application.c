@@ -119,6 +119,7 @@ static void AppTask(void *pv) {
 }
 #endif
 
+#if PL_CONFIG_IS_ROBOT
 void Application_Run(void) {
   __asm volatile("cpsid i"); /* disable all interrupts, they get enabled at scheduler start */
   Platform_Init();
@@ -132,3 +133,4 @@ void Application_Run(void) {
 #endif
   for(;;) {}
 }
+#endif /* PL_CONFIG_IS_ROBOT */

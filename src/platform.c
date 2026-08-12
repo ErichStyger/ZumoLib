@@ -146,6 +146,9 @@
 #if PL_CONFIG_USE_ESP_IDENTIFY
   #include "esp32_identify.h"
 #endif
+#if PL_CONFIG_USE_NTP_CLIENT
+  #include "McuNtpClient.h"
+#endif
 #if PL_CONFIG_USE_UDP_CLIENT
   #include "McuUdpClient.h"
 #endif
