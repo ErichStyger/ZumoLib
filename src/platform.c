@@ -124,6 +124,9 @@
 #if PL_CONFIG_USE_REMOTE_RNET_LED
   #include "remoteRnetLED.h"
 #endif
+#if PL_CONFIG_USE_ESP_IDENTIFY
+  #include "esp32_identify.h"
+#endif
 
 #if PL_CONFIG_USE_ESP32
 static void Esp32ProgrammingCallback(bool isProgramming) {
@@ -297,5 +300,8 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_USE_ADOPT_HW
   ADAPT_AdaptToHardware(); /* must be after quadcounter and motor modules */
+#endif
+#if PL_CONFIG_USE_ESP_IDENTIFY
+  ESP32Identify_Init();
 #endif
 }
