@@ -23,6 +23,9 @@
 #if PL_CONFIG_USE_TIME_DATE
   #include "McuTimeDate.h"
 #endif
+#if PL_CONFIG_USE_SEMIHOSTING
+  #include "McuSemihost.h"
+#endif
 #if configUSE_PERCEPIO_TRACE_HOOKS
   #include "McuPercepio.h"
 #elif configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
@@ -48,8 +51,8 @@
 #if PL_CONFIG_USE_LEDS
   #include "leds.h"
 #endif
-#if PL_CONFIG_USE_SEMIHOSTING
-  #include "McuSemihost.h"
+#if PL_CONFIG_USE_BLINKY
+  #include "blinky.h"
 #endif
 #if PL_CONFIG_USE_BUTTONS
   #include "buttons.h"
@@ -65,8 +68,13 @@
 #endif
 #if PL_CONFIG_USE_I2C
   #include "McuGenericI2C.h"
+  #include "McuGenericSWI2C.h"
   #include "McuI2cLib.h"
 #endif
+#if PL_CONFIG_USE_NVMC
+  #include "nvmc.h"
+#endif
+#include "application.h"
 
 /* robot specifics */
 #if PL_CONFIG_USE_MOTORS
@@ -102,6 +110,9 @@
 #if PL_CONFIG_USE_ESP32
   #include "McuESP32.h"
 #endif
+#if PL_CONFIG_USE_ROBOT2ESP
+  #include "robotToEsp.h"
+#endif
 #if PL_CONFIG_USE_IDENTIFY
   #include "identify.h"
 #endif
@@ -109,21 +120,15 @@
   #include "adaptToHW.h"
 #endif
 
-#if PL_CONFIG_USE_BLINKY
-  #include "blinky.h"
+/* Nordic specific */
+#if PL_CONFIG_USE_SPI
+  #include "McuSPI.h"
 #endif
 #if PL_CONFIG_USE_NORDIC_RADIO
-  #include "McuSPI.h"
   #include "RNet_App.h"
-#endif
-#if PL_CONFIG_USE_ROBOT2ESP
-  #include "robotToEsp.h"
 #endif
 #if PL_CONFIG_USE_REMOTE_NORDIC
   #include "remoteNordic.h"
-#endif
-#if PL_CONFIG_USE_ESP2ROBOT
-  #include "esp2robot.h"
 #endif
 #if PL_CONFIG_USE_REMOTE_RNET_LED
   #include "remoteRnetLED.h"
@@ -140,6 +145,40 @@
 #endif
 #if PL_CONFIG_USE_ESP_IDENTIFY
   #include "esp32_identify.h"
+#endif
+#if PL_CONFIG_USE_UDP_CLIENT
+  #include "McuUdpClient.h"
+#endif
+#if PL_CONFIG_USE_UDP_SERVER
+  #include "McuUdpServer.h"
+#endif
+#if PL_CONFIG_USE_UDP_SERVER_BACKEND
+  #include "udpServerBackend.h"
+#endif
+#if PL_CONFIG_USE_ESP2ROBOT
+  #include "esp2robot.h"
+#endif
+#if PL_CONFIG_USE_OLED
+  #include "McuSSD1306.h"
+  #include "oled.h"
+#endif
+#if PL_CONFIG_HAS_LCD
+  #include "LCD.h"
+#endif
+#if PL_CONFIG_HAS_LCD_MENU
+  #include "LCDMenu.h"
+#endif
+#if PL_CONFIG_USE_SENSIRION
+  #include "sensirion.h"
+#endif
+#if PL_CONFIG_USE_MQTT_SENSOR
+  #include "mqtt_sensor.h"
+#endif
+#if McuUart485_CONFIG_USE_RS_485
+  #include "McuUart485.h"
+#endif
+#if PL_CONFIG_USE_RS485_SHELL
+  #include "rs485.h"
 #endif
 
 #if PL_CONFIG_USE_ESP32
@@ -169,6 +208,10 @@ static void Esp32ProgrammingCallback(bool isProgramming) {
 }
 #endif /* PL_CONFIG_USE_ESP32 */
 
+#if McuLib_CONFIG_CPU_IS_ESP32
+  uint32_t SystemCoreClock = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ*1000000; /* equivalent to ARM CMSIS core clock frequency */
+#endif
+
 #if configUSE_HEAP_SCHEME==5
   #if McuLib_CONFIG_CPU_VARIANT==McuLib_CONFIG_CPU_VARIANT_NXP_K22FN
     /* K22FX512 uses SDK linker file, where upper gets filled first by application, and lower is free */
@@ -191,6 +234,7 @@ static void Esp32ProgrammingCallback(bool isProgramming) {
 #endif
 
 void Platform_Init(void) {
+  McuLib_Init();
   McuWait_Init();
   McuRTOS_Init();
 #if configUSE_HEAP_SCHEME==5
@@ -247,7 +291,8 @@ void Platform_Init(void) {
   ID_Init();
 #endif
 #if PL_CONFIG_USE_BUTTONS
- Buttons_Init();
+  McuBtn_Init();
+  Buttons_Init();
 #endif
 #if PL_CONFIG_USE_DEBOUNCE
   Debounce_Init();
@@ -287,7 +332,16 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_USE_MCUFLASH
   McuFlash_Init();
-  McuFlash_RegisterMemory((void*)McuMinINI_CONFIG_FLASH_NVM_ADDR_START, McuMinINI_CONFIG_FLASH_NVM_NOF_BLOCKS*McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE);
+  #if PL_CONFIG_IS_ROBOT
+    McuFlash_RegisterMemory((void*)McuMinINI_CONFIG_FLASH_NVM_ADDR_START, McuMinINI_CONFIG_FLASH_NVM_NOF_BLOCKS*McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE);
+  #elif PL_CONFIG_IS_ESP32
+    McuFlash_RegisterMemory((const void*)McuFlash_GetEsp32PartitionAddress(), McuFlash_GetEsp32PartitionSize());
+  #endif
+#endif
+#if PL_CONFIG_USE_WIFI && McuLib_CONFIG_CPU_IS_ESP32
+  ESP_ERROR_CHECK(nvs_flash_init()); /* need to call this before using any WiFi functions */
+  McuEsp32Mac_Init();
+  McuWiFi_Init();
 #endif
 #if PL_CONFIG_USE_MININI
   McuMinINI_Init();
@@ -315,7 +369,48 @@ void Platform_Init(void) {
 #if PL_CONFIG_USE_ADOPT_HW
   ADAPT_AdaptToHardware(); /* must be after quadcounter and motor modules */
 #endif
+#if PL_CONFIG_USE_UDP_SERVER
+  McuUdpServer_Init();
+#endif
+#if PL_CONFIG_USE_UDP_SERVER_BACKEND
+  UdpServerBackend_Init();
+#endif
+#if PL_CONFIG_USE_UDP_CLIENT
+  McuUdpClient_Init();
+#endif
+#if PL_CONFIG_USE_MQTT_CLIENT
+  McuMqttClient_Init();
+#endif
+#if PL_CONFIG_USE_PING
+  McuPing_Init();
+#endif
+#if PL_CONFIG_USE_NTP_CLIENT
+  McuNtpClient_Init();
+#endif
+#if PL_CONFIG_HAS_LCD
+  LCD_Init();
+#endif
+#if PL_CONFIG_USE_OLED
+  OLED_Init();
+#endif
+#if PL_CONFIG_USE_SENSIRION
+  Sensirion_Init();
+#endif
+#if PL_CONFIG_USE_MQTT_SENSOR
+  MqttSensor_Init();
+#endif
+#if PL_CONFIG_USE_RS485
+  #if McuUart485_CONFIG_USE_RAW
+    McuUart485_Init();
+  #else
+    RS485_Init();
+  #endif
+#endif
+#if PL_CONFIG_HAS_LCD_MENU
+  LCDMenu_Init();
+#endif
 #if PL_CONFIG_USE_ESP_IDENTIFY
   ESP32Identify_Init();
 #endif
+  Application_Init();
 }
