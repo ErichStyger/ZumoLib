@@ -290,17 +290,6 @@ void Platform_Init(void) {
   McuSemiHost_Init();
 #endif
   Leds_Init();
-#if PL_CONFIG_USE_SHELL
-  Shell_Init();
-#endif
-#if PL_CONFIG_USE_SHELL_CDC
-  McuShellCdcDevice_Init();
-  #if PL_CONFIG_USE_ESP32 && McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC
-    McuShellCdcDevice_SetBufferRxCharCallback(McuESP32_SendTxData); /* store incoming USB CDC character into the ESP outgoing queue */
-  #else
-    McuShellCdcDevice_SetBufferRxCharCallback(McuShellCdcDevice_QueueData);
-  #endif
-#endif
 #if PL_CONFIG_USE_ESP32
   McuESP32_Init();
   #if McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC
@@ -354,11 +343,6 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_MAZE_SOLVING
   Maze_Init();
-#endif
-#if PL_CONFIG_USE_WIFI && McuLib_CONFIG_CPU_IS_ESP32
-  ESP_ERROR_CHECK(nvs_flash_init()); /* need to call this before using any WiFi functions */
-  McuEsp32Mac_Init();
-  McuWiFi_Init();
 #endif
 #if PL_CONFIG_USE_NORDIC_RADIO
   McuSPI_Init();
@@ -419,8 +403,24 @@ void Platform_Init(void) {
 #if PL_CONFIG_HAS_LCD_MENU
   LCDMenu_Init();
 #endif
+#if PL_CONFIG_USE_SHELL
+  Shell_Init();
+#endif
+#if PL_CONFIG_USE_SHELL_CDC
+  McuShellCdcDevice_Init();
+  #if PL_CONFIG_USE_ESP32 && McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC
+    McuShellCdcDevice_SetBufferRxCharCallback(McuESP32_SendTxData); /* store incoming USB CDC character into the ESP outgoing queue */
+  #else
+    McuShellCdcDevice_SetBufferRxCharCallback(McuShellCdcDevice_QueueData);
+  #endif
+#endif
 #if PL_CONFIG_USE_ESP_IDENTIFY
   ESP32Identify_Init();
+#endif
+#if PL_CONFIG_USE_WIFI && McuLib_CONFIG_CPU_IS_ESP32
+  ESP_ERROR_CHECK(nvs_flash_init()); /* need to call this before using any WiFi functions */
+  McuEsp32Mac_Init();
+  McuWiFi_Init();
 #endif
 #if PL_CONFIG_IS_ESP32
   AppEsp_Init();
