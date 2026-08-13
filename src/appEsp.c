@@ -95,6 +95,7 @@ for(;;) {
 }
 #endif /* PL_CONFIG_USE_MQTT_CLIENT */
 
+#if PL_CONFIG_USE_WIFI
 static void AppEsp_SuspendResumeNetworkServices(bool isSuspend) {
   if (isSuspend) {
   #if PL_CONFIG_USE_UDP_SERVER
@@ -127,6 +128,7 @@ static void AppEsp_SuspendResumeNetworkServices(bool isSuspend) {
   #endif
   }
 }
+#endif /* PL_CONFIG_USE_WIFI */
 
 static void AppEspTask(void *pv) {
   for(;;) {
