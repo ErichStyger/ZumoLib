@@ -31,6 +31,7 @@
   #include "buzzer.h"
 #endif
 
+#if PL_CONFIG_IS_ROBOT
 typedef enum {
   APP_STATE_STARTUP,
   APP_STATE_INIT,
@@ -53,6 +54,7 @@ typedef enum {
 } AppStateType;
 
 static AppStateType appState = APP_STATE_STARTUP;
+#endif /* #if PL_CONFIG_IS_ROBOT */
 
 #if PL_CONFIG_USE_REFLECTANCE
 bool Application_StateIsCalibrating(void) {
