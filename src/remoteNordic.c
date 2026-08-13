@@ -45,10 +45,10 @@
 #define NVMC_MININI_KEY_NORDIC_REMOTE_SADDR_DEFAULT   0xff
 #define NVMC_MININI_KEY_NORDIC_REMOTE_DADDR_DEFAULT   0xff
 
-#if McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ESP32
   static RemoteNordic_RobotMoveStatus_e RemoteNordic_RobotMoveStatus = RemoteNordic_MOVE_STATUS_UNKNOWN;
   static uint32_t RemoteNordic_RobotBatteryVoltage_mV = 0;
-#else /* robot */
+#elif PL_CONFIG_IS_ROBOT
   #define NORDIC_REMOTE_TIMEOUT_PERIOD_MS   (1000)
   static TimerHandle_t timeoutTimer; /* timer for timeout and to stop robot in case of no communication */
 #endif
@@ -75,7 +75,7 @@ static RAPP_ShortAddrType RemoteNordic_GetRNetDestinationAddr(void)  {
   return RNETA_GetDestAddr();
 }
 
-#if !McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ROBOT
 void RemoteNordic_TimeoutRestart(void) {
   (void)xTimerStart(timeoutTimer, pdMS_TO_TICKS(100));
 }
@@ -93,7 +93,7 @@ static void vTimerCallbacktTimeout(TimerHandle_t pxTimer) {
   }
 #endif
 }
-#endif /* #if !McuLib_CONFIG_CPU_IS_ESP32 */
+#endif /* PL_CONFIG_IS_ROBOT */
 
 int RemoteNordic_QueryRobotBatteryVoltage(void) {
   return RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_QUERY_VALUE, RAPP_MSG_TYPE_DATA_ID_BATTERY_V, 0, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NONE);
@@ -103,20 +103,20 @@ int RemoteNordic_QueryRobotButton(void) {
   return RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_QUERY_VALUE, RAPP_MSG_TYPE_DATA_ID_BUTTON, 0, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NONE);
 }
 
-#if McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ESP32
 static void RemoteNordic_SetRobotBatteryVoltage(uint32_t mV) {
   RemoteNordic_RobotBatteryVoltage_mV = mV;
 }
 #endif
 
-#if McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ESP32
 uint32_t RemoteNordic_GetRobotBatteryVoltage_mV(void) {
   return RemoteNordic_RobotBatteryVoltage_mV;
 }
 #endif
 
 RemoteNordic_RobotMoveStatus_e RemoteNordic_GetRobotMoveStatus(void) {
-#if !McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ROBOT
   #if PL_CONFIG_USE_DRIVE
     switch(DRV_GetMode()) {
       case DRV_MODE_STOP: return RemoteNordic_MOVE_STATUS_STOPPED;
@@ -132,7 +132,7 @@ RemoteNordic_RobotMoveStatus_e RemoteNordic_GetRobotMoveStatus(void) {
 #endif
 }
 
-#if McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ESP32
 void RemoteNordic_SetRobotMoveStatus(RemoteNordic_RobotMoveStatus_e status) {
   RemoteNordic_RobotMoveStatus = status;
 }
@@ -140,7 +140,7 @@ void RemoteNordic_SetRobotMoveStatus(RemoteNordic_RobotMoveStatus_e status) {
 
 #if PL_CONFIG_USE_BUTTONS
 static bool RemoteNordic_ButtonIsPressed(void) {
-#if !McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ROBOT
   return Buttons_IsPressed(BUTTONS_USER);
 #else
   return Buttons_IsPressed(BUTTONS_NAV_CENTER);
@@ -152,7 +152,7 @@ void RemoteNordic_OnButtonEvent(uint32_t buttonBits, McuDbnc_EventKinds kind) {
   /* \todo */
 }
 
-#if !McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ROBOT
 static void RemoteNordic_RobotOnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
   const char *p = NULL;
 #if PL_CONFIG_USE_DRIVE
@@ -355,7 +355,7 @@ static void RemoteNordic_RobotOnButtonEvent(Buttons_e button, McuDbnc_EventKinds
   #endif
   }
 }
-#endif /* !McuLib_CONFIG_CPU_IS_ESP32 */
+#endif /* PL_CONFIG_IS_ROBOT */
 
 #if McuLib_CONFIG_CPU_IS_ESP32
 void RemoteNordic_ESP32OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
@@ -376,7 +376,7 @@ uint8_t RemoteNordic_HandleRemoteRxMessage(RAPP_MSG_Type type, uint8_t size, uin
 
   switch(type) {
     /* ------------ General data messages -------------------------------*/
-    #if !McuLib_CONFIG_CPU_IS_ESP32
+    #if PL_CONFIG_IS_ROBOT
     case RAPP_MSG_TYPE_JOYSTICK_BTN:
       *handled =true;
       char button = data[0];
@@ -421,7 +421,7 @@ uint8_t RemoteNordic_HandleRemoteRxMessage(RAPP_MSG_Type type, uint8_t size, uin
           RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_QUERY_VALUE_RESPONSE, msgID, msgValue, srcAddr, RPHY_PACKET_FLAGS_NONE);
           break;
       #endif
-      #if !McuLib_CONFIG_CPU_IS_ESP32
+      #if PL_CONFIG_IS_ROBOT
         case RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE:
           *handled =true;
           msgValue = RemoteNordic_GetRobotMoveStatus();
@@ -471,7 +471,7 @@ uint8_t RemoteNordic_HandleRemoteRxMessage(RAPP_MSG_Type type, uint8_t size, uin
           case RAPP_MSG_TYPE_DATA_ID_NAV:
             *handled = true;
             McuLog_info("Notify: Nav is 0x%0x", msgValue);
-            #if !McuLib_CONFIG_CPU_IS_ESP32
+            #if PL_CONFIG_IS_ROBOT
               RemoteNordic_RobotOnButtonEvent(msgValue&0xffff /* button */, (msgValue>>16)&0xffff /* button press event */);
             #endif
             break;
@@ -517,10 +517,12 @@ static uint8_t PrintStatus(const McuShell_StdIOType *io) {
 static uint8_t PrintHelp(const McuShell_StdIOType *io) {
   McuShell_SendHelpStr((unsigned char*)"RemoteNordic", (unsigned char*)"Group of RemoteNordic commands\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows NordicRemote help or status\r\n", io->stdOut);
-  McuShell_SendHelpStr((unsigned char*)"  beep <f> <t>", (unsigned char*)"Send robot a beep with frequency and duration\r\n", io->stdOut);
+#if PL_CONFIG_IS_ESP32
+  McuShell_SendHelpStr((unsigned char*)"  beep <f> <t>", (unsigned char*)"Send beep to robot with frequency and duration\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  get battery", (unsigned char*)"Query robot battery voltage\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  get button", (unsigned char*)"Query robot button status\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  nav <udlrc> on|off", (unsigned char*)"Send nav (up, down, left, right, center) button message\r\n", io->stdOut);
+#endif
   McuShell_SendHelpStr((unsigned char*)"  saddr <addr>", (unsigned char*)"Set RNet source address\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  daddr <addr>", (unsigned char*)"Set RNet destination address\r\n", io->stdOut);
   return ERR_OK;
@@ -576,6 +578,7 @@ uint8_t RemoteNordic_ParseCommand(const unsigned char *cmd, bool *handled, const
   } else if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_STATUS)==0 || McuUtility_strcmp((char*)cmd, (char*)"RemoteNordic status")==0) {
     *handled = TRUE;
     return PrintStatus(io);
+#if PL_CONFIG_IS_ESP32
   } else if (McuUtility_strncmp((char*)cmd, (char*)"RemoteNordic beep ", sizeof("RemoteNordic beep ")-1)==0) {
     uint16_t freq, time;
     uint8_t dataBuf[4]; /* 2 byte frequency, 2 byte duration */
@@ -591,12 +594,17 @@ uint8_t RemoteNordic_ParseCommand(const unsigned char *cmd, bool *handled, const
       McuShell_SendStr((unsigned char*)"ERR: wrong format\r\n", io->stdErr);
       return ERR_FAILED;
     }
+#endif
+#if PL_CONFIG_IS_ESP32
   } else if (McuUtility_strcmp((char*)cmd, (char*)"RemoteNordic get battery")==0) {
     *handled = true;
     return RemoteNordic_QueryRobotBatteryVoltage();
+#endif
+#if PL_CONFIG_IS_ESP32
   } else if (McuUtility_strcmp((char*)cmd, (char*)"RemoteNordic get button")==0) {
     *handled = true;
     return RemoteNordic_QueryRobotButton();
+#endif
   } else if (McuUtility_strncmp((char*)cmd, (char*)"RemoteNordic saddr ", sizeof("RemoteNordic saddr ")-1)==0) {
     *handled = true;
     p = cmd + sizeof("RemoteNordic saddr ")-1;
@@ -615,7 +623,7 @@ uint8_t RemoteNordic_ParseCommand(const unsigned char *cmd, bool *handled, const
     } else {
       return ERR_FAILED;
     }
-#if McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ESP32
   } else if (McuUtility_strncmp((char*)cmd, (char*)"RemoteNordic nav ", sizeof("RemoteNordic nav ")-1)==0) {
     *handled = true;
     return HandleNavOption(cmd+sizeof("RemoteNordic nav ")-1);
@@ -637,7 +645,7 @@ static void NordicRemoteTask(void *pv) {
   RNETA_SetDestAddr(NVMC_MININI_KEY_NORDIC_REMOTE_DADDR_DEFAULT);
 #endif
   for(;;) {
-    #if 0 && PL_CONFIG_USE_BUTTONS /* template for how to send a button event */
+    #if 0 && PL_CONFIG_USE_BUTTONS /* template/example for how to send a button event */
     if (RemoteNordic_ButtonIsPressed()) {
       RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_NOTIFY_VALUE, RAPP_MSG_TYPE_DATA_ID_BUTTON, 1, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NONE); /* pressed */
       while(RemoteNordic_ButtonIsPressed()) {
@@ -654,7 +662,8 @@ void RemoteNordic_Init(void) {
   if (xTaskCreate(NordicRemoteTask, "NordicRemote", 1024/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS) {
     for(;;){} /* error */
   }
-#if !McuLib_CONFIG_CPU_IS_ESP32
+#if PL_CONFIG_IS_ROBOT
+  /* use a timeout on the robot: if after a move command we do not get a stop, we get a timeout and stop automatically */
   timeoutTimer = xTimerCreate(
         "timeout", /* name */
         pdMS_TO_TICKS(NORDIC_REMOTE_TIMEOUT_PERIOD_MS), /* period/time */
