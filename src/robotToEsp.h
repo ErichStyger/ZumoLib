@@ -12,7 +12,6 @@
 #if PL_CONFIG_USE_ROBOT2ESP
 #include "McuShell.h"
 
-
 /* called by the gateway task to put a char from the ESP into the queue for the remote */
 void RobotToEsp_GatewayRxFromESP(unsigned char ch);
 

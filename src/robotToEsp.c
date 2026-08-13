@@ -22,12 +22,12 @@
   #include "buzzer.h"
 #endif
 
-static QueueHandle_t RobotToEsp_RxFromESP_Queue; /* queue for data received from the ESP sent to the robot */
-static QueueHandle_t RobotToEsp_TxToESP_Queue;   /* queue for the data to be sent as response to the ESP from the robot */
+static QueueHandle_t RobotToEsp_RxFromESP_Queue; /* queue for data received from the ESP, to be read by the robot */
+static QueueHandle_t RobotToEsp_TxToESP_Queue;   /* queue for the data to be sent from the robot as response for the ESP commands */
 
-#define ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_LENGTH      32 /* items in queue */
+#define ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_LENGTH      64 /* items in queue */
 #define ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_ITEM_SIZE   1  /* each item is a single character */
-#define ROBOT_TO_ESP_UART_TX_FROM_ESP_QUEUE_LENGTH      32 /* items in queue */
+#define ROBOT_TO_ESP_UART_TX_FROM_ESP_QUEUE_LENGTH      64 /* items in queue */
 #define ROBOT_TO_ESP_UART_TX_FROM_ESP_QUEUE_ITEM_SIZE   1  /* each item is a single character */
 
 /* called by the gateway task to put a char from the ESP into the queue for the remote */
@@ -156,7 +156,7 @@ static void Scan(CMD_ParserState_e *state, unsigned char ch, unsigned char *buf,
 
           p = buf+sizeof("cmd ")-1;
           McuLog_trace("received cmd \"%s\"", p);
-          Shell_ParseCommandWithIO((unsigned char*)p, McuESP32_GetTxToESPStdio()); /* parse command and end answer to ESP */
+          Shell_ParseCommandWithIO((unsigned char*)p, McuESP32_GetTxToESPStdio()); /* parse command and send answer to ESP */
         }
         *state = CMD_PARSER_SCANNING; /* start scanning again */
         break;
@@ -186,21 +186,38 @@ static void RemoteToEspTask(void *pv) {
 }
 
 static uint8_t PrintStatus(const McuShell_StdIOType *io) {
-  McuShell_SendStatusStr((unsigned char*)"robot2esp", (unsigned char*)"Remote App RF status\r\n", io->stdOut);  return ERR_OK;
+  McuShell_SendStatusStr((unsigned char*)"robot2esp", (unsigned char*)"Robot2Esp status\r\n", io->stdOut);  return ERR_OK;
 }
 
 static void PrintHelp(const McuShell_StdIOType *io) {
   McuShell_SendHelpStr((unsigned char*)"robot2esp", (unsigned char*)"Group of robot2esp commands\r\n", io->stdOut);
   McuShell_SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows help or status\r\n", io->stdOut);
+  McuShell_SendHelpStr((unsigned char*)"  send <text>", (unsigned char*)"Send text or command to the ESP\r\n", io->stdOut);
 }
 
 uint8_t RobotToEsp_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell_StdIOType *io) {
+  const unsigned char *p;
+
   if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_HELP)==0 || McuUtility_strcmp((char*)cmd, (char*)"robot2esp help")==0) {
-    *handled = TRUE;
+    *handled = true;
     PrintHelp(io);
   } else if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_STATUS)==0 || McuUtility_strcmp((char*)cmd, (char*)"robot2esp status")==0) {
-    *handled = TRUE;
+    *handled = true;
     return PrintStatus(io);
+  } else if (McuUtility_strncmp((char*)cmd, (char*)"robot2esp send ", sizeof("robot2esp send ")-1)==0) {
+    *handled = true;
+    p = cmd + sizeof("robot2esp send ")-1;
+    /* use the shell UART for the command output and data received from the ESP */
+    McuESP32_SetRxFromESPStdio(McuShellUart_GetStdio()); /* assign optional I/O for incoming ESP data: forward to shell UART */
+    while(*p!='\0') {
+      McuESP32_GetTxToESPStdio()->stdOut(*p);
+      p++;
+    }
+    McuESP32_GetTxToESPStdio()->stdOut('\r');
+    McuESP32_GetTxToESPStdio()->stdOut('\n');
+    vTaskDelay(pdMS_TO_TICKS(500)); /* give some time prior switching back to the parser */
+    McuESP32_SetRxFromESPStdio(&robotParsingESPcommands); /* assign optional I/O for incoming ESP data: forward it to the parser in this module */
+    return ERR_OK;
   }
   return ERR_OK;
 }
@@ -223,8 +240,8 @@ void RobotToEsp_Init(void) {
     for(;;){} /* out of memory? */
   }
   vQueueAddToRegistry(RobotToEsp_TxToESP_Queue, "RemoteTxToESPQueue");
-  
-  McuESP32_SetRxFromESPStdio(RobotToEsp_GetIOforEspRx()); /* assign optional I/O for incoming ESP data */
+
+  McuESP32_SetRxFromESPStdio(&robotParsingESPcommands); /* assign optional I/O for incoming ESP data: forward it to the parser in this module */
 }
 
 #endif /* PL_CONFIG_USE_ROBOT2ESP */
