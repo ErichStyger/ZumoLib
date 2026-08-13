@@ -289,7 +289,9 @@ void Platform_Init(void) {
 #if PL_CONFIG_USE_SEMIHOSTING
   McuSemiHost_Init();
 #endif
+#if PL_CONFIG_USE_LEDS
   Leds_Init();
+#endif
 #if PL_CONFIG_USE_ESP32
   McuESP32_Init();
   #if McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC
