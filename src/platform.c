@@ -175,6 +175,9 @@
 #if PL_CONFIG_USE_SENSIRION
   #include "sensirion.h"
 #endif
+#if PL_CONFIG_USE_MQTT_CLIENT
+  #include "McuMqttClient.h"
+#endif
 #if PL_CONFIG_USE_MQTT_SENSOR
   #include "mqtt_sensor.h"
 #endif

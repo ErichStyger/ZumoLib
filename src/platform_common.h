@@ -193,10 +193,10 @@ extern "C" {
   #define PL_CONFIG_USE_UDP_CLIENT          (0 && PL_CONFIG_USE_WIFI && MCU_UDP_CLIENT_CONFIG_ENABLED) /*!< 1: UDP client implementation */
 #endif
 #ifndef PL_CONFIG_USE_MQTT_CLIENT
-  #define PL_CONFIG_USE_MQTT_CLIENT         (0 && PL_CONFIG_USE_WIFI && MCU_MQTT_CLIENT_CONFIG_ENABLED)   /*!< 1: if running MQTT client */
+  #define PL_CONFIG_USE_MQTT_CLIENT         (1 && PL_CONFIG_USE_WIFI && MCU_MQTT_CLIENT_CONFIG_ENABLED)   /*!< 1: if running MQTT client */
 #endif
 #ifndef PL_CONFIG_USE_MQTT_SENSOR
-  #define PL_CONFIG_USE_MQTT_SENSOR         (0 && PL_CONFIG_USE_WIFI && PL_CONFIG_USE_MQTT_CLIENT && PL_CONFIG_USE_SENSIRION) /*!< 1: using sensor MQTT application */
+  #define PL_CONFIG_USE_MQTT_SENSOR         (1 && PL_CONFIG_USE_WIFI && PL_CONFIG_USE_MQTT_CLIENT && PL_CONFIG_USE_SENSIRION) /*!< 1: using sensor MQTT application */
 #endif
 
 #ifndef PL_CONFIG_USE_ESP2ROBOT

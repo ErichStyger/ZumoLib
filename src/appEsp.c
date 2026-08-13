@@ -16,6 +16,12 @@
 #include "McuUdpServer.h"
 #include "debounce.h"
 #include "buttons.h"
+#if PL_CONFIG_USE_SENSIRION
+  #include "sensirion.h"
+#endif
+#if PL_CONFIG_USE_MQTT_SENSOR
+  #include "mqtt_sensor.h"
+#endif
 #if PL_CONFIG_USE_REMOTE_NORDIC
   #include "remoteNordic.h"
 #endif
@@ -31,19 +37,19 @@ void AppEsp_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) { /* calle
 #if PL_CONFIG_USE_MQTT_CLIENT
 static TaskHandle_t mqttTaskHandle = NULL;
 
-void App_MqttTaskResume(void) {
+static void AppEsp_MqttTaskResume(void) {
   if (mqttTaskHandle!=NULL) {
     vTaskResume(mqttTaskHandle);
   }
 }
 
-void App_MqttTaskSuspend(void) {
+static void AppEsp_MqttTaskSuspend(void) {
   if (mqttTaskHandle!=NULL) {
     vTaskSuspend(mqttTaskHandle);
   }
 }
 
-static void MqttTask(void *pv) {
+static void AppEspMqttTask(void *pv) {
 #if PL_CONFIG_USE_MQTT_SENSOR
   bool firstTime = true;
   bool isEnabled = false;
@@ -65,7 +71,7 @@ for(;;) {
         }
       }
     }
-#elif PL_CONFIG_USE_MQTT_GAME
+#elif 0 && PL_CONFIG_USE_MQTT_GAME /* \TODO */
     if (MqttClient_CanPublish()) {
       McuLog_info("query robot battery status");
       Game_QueryRobotBatteryVoltage(); /* periodically query robot battery voltage */
@@ -142,7 +148,7 @@ void AppEsp_Init(void) {
 #endif
 #if PL_CONFIG_USE_MQTT_CLIENT
   if (xTaskCreate(
-      MqttTask,  /* pointer to the task */
+      AppEspMqttTask,  /* pointer to the task */
       "mqtt", /* task name for kernel awareness debugging */
       4*1024/sizeof(StackType_t), /* task stack size */
       (void*)NULL, /* optional task startup argument */
