@@ -262,6 +262,21 @@ void Platform_Init(void) {
   McuGPIO_Init();
   McuLED_Init();
   McuLog_Init();
+#if PL_CONFIG_USE_MCUFLASH
+  McuFlash_Init();
+  #if PL_CONFIG_IS_ROBOT
+    McuFlash_RegisterMemory((void*)McuMinINI_CONFIG_FLASH_NVM_ADDR_START, McuMinINI_CONFIG_FLASH_NVM_NOF_BLOCKS*McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE);
+  #elif PL_CONFIG_IS_ESP32
+    McuFlash_RegisterMemory((const void*)McuFlash_GetEsp32PartitionAddress(), McuFlash_GetEsp32PartitionSize());
+  #endif
+#endif
+#if PL_CONFIG_USE_MININI
+  McuMinINI_Init();
+#endif
+#if PL_CONFIG_USE_I2C
+  McuGenericI2C_Init();
+  McuI2cLib_Init();
+#endif
 #if PL_CONFIG_USE_SHELL_UART
   McuShellUart_Init();
 #endif
@@ -334,25 +349,10 @@ void Platform_Init(void) {
 #if PL_CONFIG_MAZE_SOLVING
   Maze_Init();
 #endif
-#if PL_CONFIG_USE_MCUFLASH
-  McuFlash_Init();
-  #if PL_CONFIG_IS_ROBOT
-    McuFlash_RegisterMemory((void*)McuMinINI_CONFIG_FLASH_NVM_ADDR_START, McuMinINI_CONFIG_FLASH_NVM_NOF_BLOCKS*McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE);
-  #elif PL_CONFIG_IS_ESP32
-    McuFlash_RegisterMemory((const void*)McuFlash_GetEsp32PartitionAddress(), McuFlash_GetEsp32PartitionSize());
-  #endif
-#endif
 #if PL_CONFIG_USE_WIFI && McuLib_CONFIG_CPU_IS_ESP32
   ESP_ERROR_CHECK(nvs_flash_init()); /* need to call this before using any WiFi functions */
   McuEsp32Mac_Init();
   McuWiFi_Init();
-#endif
-#if PL_CONFIG_USE_MININI
-  McuMinINI_Init();
-#endif
-#if PL_CONFIG_USE_I2C
-  McuGenericI2C_Init();
-  McuI2cLib_Init();
 #endif
 #if PL_CONFIG_USE_NORDIC_RADIO
   McuSPI_Init();
