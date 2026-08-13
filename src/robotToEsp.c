@@ -204,11 +204,23 @@ static void RemoteToEspTask(void *pv) {
   }
 }
 
+static uint8_t PrintStatus(const McuShell_StdIOType *io) {
+  McuShell_SendStatusStr((unsigned char*)"robot2esp", (unsigned char*)"Remote App RF status\r\n", io->stdOut);  return ERR_OK;
+}
+
+static void PrintHelp(const McuShell_StdIOType *io) {
+  McuShell_SendHelpStr((unsigned char*)"robot2esp", (unsigned char*)"Group of robot2esp commands\r\n", io->stdOut);
+  McuShell_SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows help or status\r\n", io->stdOut);
+}
+
 uint8_t RobotToEsp_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell_StdIOType *io) {
-  (void)cmd;
-  (void)handled;
-  (void)io;
-  /* nothing implemented yet */
+  if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_HELP)==0 || McuUtility_strcmp((char*)cmd, (char*)"robot2esp help")==0) {
+    *handled = TRUE;
+    PrintHelp(io);
+  } else if (McuUtility_strcmp((char*)cmd, (char*)McuShell_CMD_STATUS)==0 || McuUtility_strcmp((char*)cmd, (char*)"robot2esp status")==0) {
+    *handled = TRUE;
+    return PrintStatus(io);
+  }
   return ERR_OK;
 }
 
