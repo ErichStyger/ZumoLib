@@ -121,7 +121,7 @@ extern "C" {
   #define PL_CONFIG_USE_REFLECTANCE         (1 && PL_CONFIG_IS_ROBOT) /*!< 1: if having line sensor */
 #endif
 #ifndef PL_CONFIG_LINE_FOLLOWING
-  #define PL_CONFIG_LINE_FOLLOWING          (1 && PL_CONFIG_USE_REFLECTANCE)
+  #define PL_CONFIG_LINE_FOLLOWING          (1 && PL_CONFIG_USE_REFLECTANCE && PL_CONFIG_USE_LINE_PID)
 #endif
 #ifndef PL_CONFIG_USE_LINE_PID
   #define PL_CONFIG_USE_LINE_PID            (1 && PL_CONFIG_USE_PID && PL_CONFIG_LINE_FOLLOWING)
