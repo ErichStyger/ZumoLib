@@ -370,7 +370,15 @@ void Shell_Init(void) {
   vQueueAddToRegistry(SHELL_stdioMutex, "ShellStdIoMutex");
 #endif
   ConfigureLogger();
-  if (xTaskCreate(ShellTask, "Shell", (2*1024)/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS) {
+  if (xTaskCreate(ShellTask, "Shell", 
+    #if PL_CONFIG_IS_ROBOT
+      (2*1024)/sizeof(StackType_t),
+    #elif PL_CONFIG_IS_ESP32
+      (6*1024)/sizeof(StackType_t),
+    #endif
+    NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS
+  ) 
+  {
     for(;;){} /* error */
   }
   McuShell_SetStdio(ios[0].stdio);
