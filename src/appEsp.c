@@ -90,7 +90,7 @@ for(;;) {
       }
     }
 #endif
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    vTaskDelay(pdMS_TO_TICKS(60*1000));
   } /* for */
 }
 #endif /* PL_CONFIG_USE_MQTT_CLIENT */
