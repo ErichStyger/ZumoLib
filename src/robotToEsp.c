@@ -175,25 +175,6 @@ static void RemoteToEspTask(void *pv) {
   BaseType_t res;
 
   (void)pv; /* not used */
-#if 0 && PL_CONFIG_USE_BUZZER /* example making a beep */
-  Buzzer_Beep(200, 500);
-#endif
-#if 0 && PL_CONFIG_USE_DRIVE /* example driving the robot */
-  DRV_SetMode(DRV_MODE_SPEED);
-  DRV_SetSpeed(500, 500);
-  vTaskDelay(pdMS_TO_TICKS(1000));
-  DRV_SetMode(DRV_MODE_STOP);
-#endif
-#if 0 /* example receiving character from queue */
-  res = xQueueReceive(RobotToEsp_RxFromESP_Queue, &ch, pdMS_TO_TICKS(10)); /* wait max 10 ms */
-  if (res==errQUEUE_EMPTY) {
-    ch = '\0'; /* nothing received */
-  }
-  res = xQueueReceive(RobotToEsp_RxFromESP_Queue, &ch, portMAX_DELAY); /* wait 'forever' */
-  if (res==errQUEUE_EMPTY) {
-    ch = '\0'; /* nothing received */
-  }
-#endif
   for(;;) {
     res = xQueueReceive(RobotToEsp_RxFromESP_Queue, &ch, portMAX_DELAY); /* wait 'forever' */
     if (res==errQUEUE_EMPTY) {
