@@ -82,7 +82,10 @@ extern "C" {
  * ******************************   Robot ******************************
  */
 #ifndef PL_CONFIG_USE_ESP32
-  #define PL_CONFIG_USE_ESP32               (0 && McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC) /* using ESP32 on Robot */
+  #define PL_CONFIG_USE_ESP32               (1 && McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC) /*!< 1: using ESP32 HAT on robot */
+#endif
+#ifndef PL_CONFIG_USE_ROBOT2ESP
+  #define PL_CONFIG_USE_ROBOT2ESP           (1 && PL_CONFIG_USE_ESP32) /*!< shell command communication interface between robot and ESP. Requires PL_CONFIG_USE_ESP2ROBOT on the ESP32 */
 #endif
 #ifndef PL_CONFIG_USE_MOTORS
   #define PL_CONFIG_USE_MOTORS              (1 && PL_CONFIG_IS_ROBOT) /*!< 1: enable DC motor driver */
@@ -200,7 +203,7 @@ extern "C" {
 #endif
 
 #ifndef PL_CONFIG_USE_ESP2ROBOT
-  #define PL_CONFIG_USE_ESP2ROBOT           (1 && (CONFIG_ESP32_IS_FX_HAT || CONFIG_ESP32_IS_FN_HAT)) /*!< 1: use command channel from ESP to robot over UART */
+  #define PL_CONFIG_USE_ESP2ROBOT           (1 && (CONFIG_ESP32_IS_FX_HAT || CONFIG_ESP32_IS_FN_HAT)) /*!< 1: use command channel from ESP to robot over UART. Requires PL_CONFIG_USE_ROBOT2ESP on the robot. */
 #endif
 /*
  * ******************************   special hardware related settings ******************************
