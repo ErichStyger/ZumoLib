@@ -53,11 +53,6 @@ void Application_StateStopCalibrate(void);
  void Application_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event);
 #endif
 
-#if MCU_MQTT_CLIENT_CONFIG_ENABLED
-  void Application_MqttTaskResume(void);
-  void Application_MqttTaskSuspend(void);
-#endif
-
 /*!
  * \brief Runs the main application loop. Does not return.
  */

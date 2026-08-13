@@ -185,6 +185,12 @@
   #include "rs485.h"
 #endif
 
+#if PL_CONFIG_IS_ESP32
+  #include "appEsp.h"
+#elif PL_CONFIG_IS_ROBOT
+  #include "appRobot.h"
+#endif
+
 #if PL_CONFIG_USE_ESP32
 static void Esp32ProgrammingCallback(bool isProgramming) {
   /* need to reduce interrupt and task latency and system load during ESP programming, otherwise USB CDC is not fast enough */
@@ -415,6 +421,11 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_USE_ESP_IDENTIFY
   ESP32Identify_Init();
+#endif
+#if PL_CONFIG_IS_ESP32
+  AppEsp_Init();
+#elif PL_CONFIG_IS_ROBOT
+  AppRobot_Init();
 #endif
   Application_Init();
 }
