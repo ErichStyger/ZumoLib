@@ -91,7 +91,7 @@ static AppStateType StateMachine(bool buttonPress, AppStateType currState) {
   return currState;
 }
 
-static void AppTask(void *pv) {
+static void AppRobotTask(void *pv) {
 #if PL_CONFIG_USE_I2C && MCU_LIS2DH_CONFIG_IS_ENABLED
   if (McuLis2dh_Init()!=ERR_OK) {
     McuLog_fatal("init I2C accelerometer failed");
