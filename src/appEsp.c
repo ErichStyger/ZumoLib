@@ -22,7 +22,7 @@
 
 #if PL_CONFIG_USE_DEBOUNCE
 void AppEsp_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) { /* called from debouncing */
-#if PL_CONFIG_IS_ESP32 && PL_CONFIG_USE_REMOTE_NORDIC
+#if PL_CONFIG_USE_REMOTE_NORDIC
   RemoteNordic_ESP32OnButtonEvent(button, event);
 #endif
 }
