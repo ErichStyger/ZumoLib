@@ -57,11 +57,11 @@ static uint8_t HandleNavCommand(const char *cmd, const McuShell_StdIOType *io) {
   char buf[32];
   char response[64];
 
-  McuUtility_strcpy((unsigned char*)buf, sizeof(buf), (unsigned char*)"robonav ");
+  McuUtility_strcpy((unsigned char*)buf, sizeof(buf), (unsigned char*)"#robonav "); /* '#' for silent mode */
   McuUtility_strcat((unsigned char*)buf, sizeof(buf), (unsigned char*)cmd); /* e.g. "nav u on" */
   SendToRobotAndGetResponse(buf, response, sizeof(response));
   McuShell_SendStr((unsigned char*)response, io->stdOut); /* show result on console */
-  return ERR_FAILED;
+  return ERR_OK;
 }
 
 #if PL_CONFIG_USE_SHELL
