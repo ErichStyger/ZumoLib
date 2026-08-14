@@ -26,12 +26,28 @@ extern "C" {
   #include "buttons.h"
   #include "McuDebounce.h"
 
+  /*!
+   * \brief Handles button events for OLED-related actions.
+   * \param button Button that triggered the event.
+   * \param kind Debounce event kind.
+   */
   void OLED_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds kind);
 #endif
 
+/*!
+ * \brief Sends text to the OLED display.
+ * \param text Text to display.
+ */
 void OLED_SendText(const char *text);
 
+/*!
+ * \brief Initializes the OLED module.
+ */
 void OLED_Init(void);
+
+/*!
+ * \brief Deinitializes the OLED module.
+ */
 void OLED_Deinit(void);
 
 #endif /* PL_CONFIG_USE_OLED */

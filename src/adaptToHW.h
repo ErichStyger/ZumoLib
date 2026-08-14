@@ -18,6 +18,9 @@
 extern "C" {
 #endif
 
+/*!
+ * \brief Adapts the software configuration to the detected hardware.
+ */
 void ADAPT_AdaptToHardware(void);
 
 #ifdef __cplusplus

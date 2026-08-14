@@ -12,13 +12,23 @@
 #if PL_CONFIG_USE_ROBOT2ESP
 #include "McuShell.h"
 
-/* called by the gateway task to put a char from the ESP into the queue for the remote */
+/*!
+ * \brief Queues a character received from the ESP side.
+ * \param ch Character received from the ESP.
+ */
 void RobotToEsp_GatewayRxFromESP(unsigned char ch);
 
-/* called by the gateway task to get chars from the remote task to be sent to the ESP32 */
+/*!
+ * \brief Retrieves a character to be forwarded to the ESP.
+ * \param pch Destination for the queued character.
+ * \return true if a character was retrieved, false otherwise.
+ */
 bool RobotToEsp_GatewayTxToESP(unsigned char *pch);
 
-/* return the I/O to be used for forwarding data received from the ESP */
+/*!
+ * \brief Returns the I/O channel used for data received from the ESP.
+ * \return I/O handle for ESP RX forwarding.
+ */
 McuShell_ConstStdIOTypePtr RobotToEsp_GetIOforEspRx(void);
 
 /*!
@@ -30,10 +40,10 @@ McuShell_ConstStdIOTypePtr RobotToEsp_GetIOforEspRx(void);
  */
 uint8_t RobotToEsp_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell_StdIOType *io);
 
-/*! \brief De-initialization of the module */
+/*! \brief De-initialization of the module. */
 void RobotToEsp_Deinit(void);
 
-/*! \brief Initialization of the module */
+/*! \brief Initialization of the module. */
 void RobotToEsp_Init(void);
 
 #endif /* PL_CONFIG_USE_ROBOT2ESP */

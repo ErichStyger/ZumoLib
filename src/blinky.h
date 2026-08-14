@@ -23,9 +23,27 @@
 extern "C" {
 #endif
 
-void Blinky_SetOnTime(uint32_t ms); /* used for connected/disconnected status */
+/*!
+ * \brief Sets the LED on-time used for the status blink pattern.
+ * \param ms On-time in milliseconds.
+ */
+void Blinky_SetOnTime(uint32_t ms);
+
+/*!
+ * \brief Suspends the blinky task.
+ */
 void Blinky_Suspend(void);
+
+/*!
+ * \brief Resumes the blinky task.
+ */
 void Blinky_Resume(void);
+
+/*!
+ * \brief Writes the current blinky status string.
+ * \param buf Destination buffer.
+ * \param bufSize Size of the destination buffer.
+ */
 void Blinky_GetStatus(unsigned char *buf, size_t bufSize);
 
 #if PL_CONFIG_USE_SHELL
