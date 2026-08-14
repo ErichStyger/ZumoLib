@@ -21,6 +21,10 @@
   uint8_t RoboNav_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell_StdIOType *io);
 #endif
 
+#include "buttons.h"
+#include "McuDebounce.h"
+void RoboNav_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event);
+
 /*!
  * \brief Module initialization.
  */

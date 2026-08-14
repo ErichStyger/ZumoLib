@@ -37,7 +37,7 @@ static void vTimerCallbacktTimeout(TimerHandle_t pxTimer) {
 #endif
 }
 
-static void OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
+void RoboNav_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
   const char *p = NULL;
 #if PL_CONFIG_USE_DRIVE
   DRV_Mode newMode = DRV_MODE_NONE;
@@ -193,7 +193,7 @@ static uint8_t HandleNavCommand(const char *cmd) {
     McuLog_error("must be 'on' or 'off'");
     return ERR_FAILED;
   }
-  OnButtonEvent(button, kind);
+  RoboNav_OnButtonEvent(button, kind);
   return ERR_OK;
 }
 
