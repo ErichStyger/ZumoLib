@@ -18,6 +18,10 @@
   #define REFELECTANCE_CONFIG_DO_SENSOR_TRACING   (0 && PL_CONFIG_USE_RTT)
 #endif
 
+#ifndef REFLECTANCE_CONFIG_SAMPLING_PERIOD_MS
+  #define REFLECTANCE_CONFIG_SAMPLING_PERIOD_MS    (50)  /*!< sampling period for reflectance sensor */
+#endif
+
 /* \todo cleanup */
 #define REF_MIN_LINE_VAL          0x200   /* minimum value indicating a line */
 #define REF_MIN_NOISE_VAL         0x40    /* values below this are not added to the weighted sum */

@@ -210,7 +210,7 @@ static bool REF_MeasureRaw(SensorTimeType raw[REFLECTANCE_CONFIG_NOF_SENSORS], u
   }
   if (REF_Sensor.savePower) {
     REF_Sensor.irOn(true); /* turn IR LED's on */
-    McuWait_Waitus(200);
+    McuWait_Waitus(200); /* give some time to the LED to turn on */
   }
   for(i=0;i<REFLECTANCE_CONFIG_NOF_SENSORS;i++) {
     McuGPIO_SetAsOutput(REF_Sensor.sensor[i], true); /* turn I/O line as output */
@@ -218,7 +218,7 @@ static bool REF_MeasureRaw(SensorTimeType raw[REFLECTANCE_CONFIG_NOF_SENSORS], u
     raw[i] = timeoutCntVal;
   }
   McuWait_Waitus(50); /* give at least 10 us to charge the capacitor */
-  taskENTER_CRITICAL();
+  taskENTER_CRITICAL(); /* for the measurement, we need to make sure we do not get interrupted. Uses BASEPRI, so non-RTOS interrupts still fire */
   for(i=0;i<REFLECTANCE_CONFIG_NOF_SENSORS;i++) {
     McuGPIO_SetAsInput(REF_Sensor.sensor[i]); /* turn I/O line as input */
   }
@@ -600,6 +600,9 @@ static uint8_t PrintStatus(const McuShell_StdIOType *io) {
   McuShell_SendStatusStr((unsigned char*)"reflectance", (unsigned char*)"IR line sensor status\r\n", io->stdOut);
   
   McuShell_SendStatusStr((unsigned char*)"  enabled", REF_Sensor.isEnabled?(unsigned char*)"yes\r\n":(unsigned char*)"no\r\n", io->stdOut);
+  McuUtility_Num32uToStr(buf, sizeof(buf), REFLECTANCE_CONFIG_SAMPLING_PERIOD_MS);
+  McuUtility_strcat(buf, sizeof(buf), (unsigned char*)" ms\r\n");
+  McuShell_SendStatusStr((unsigned char*)"  sampling", buf, io->stdOut);
 #if REF_USE_WHITE_LINE
   McuShell_SendStatusStr((unsigned char*)"  line", (unsigned char*)"white\r\n", io->stdOut);
 #else
@@ -859,7 +862,7 @@ static void ReflTask(void *pvParameters) {
       vTaskSuspend(NULL);
     }
     REF_StateMachine();
-    vTaskDelay(pdMS_TO_TICKS(5));
+    vTaskDelay(pdMS_TO_TICKS(REFLECTANCE_CONFIG_SAMPLING_PERIOD_MS));
   }
 }
 
