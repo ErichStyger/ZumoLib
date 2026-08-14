@@ -46,6 +46,9 @@
 #if PL_CONFIG_USE_TURN
   #include "turn.h"
 #endif
+#if PL_CONFIG_USE_ROBO_NAV
+  #include "roboNav.h"
+#endif
 #if PL_CONFIG_USE_BUZZER
   #include "buzzer.h"
 #endif
@@ -173,6 +176,9 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #endif
 #if PL_CONFIG_USE_TURN
   TURN_ParseCommand,
+#endif
+#if PL_CONFIG_USE_ROBO_NAV
+  RoboNav_ParseCommand,
 #endif
 #if PL_CONFIG_USE_BUZZER
   Buzzer_ParseCommand,

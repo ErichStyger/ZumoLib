@@ -93,6 +93,9 @@
 #if PL_CONFIG_USE_DRIVE
   #include "drive.h"
 #endif
+#if PL_CONFIG_USE_ROBO_NAV
+  #include "roboNav.h"
+#endif
 #if PL_CONFIG_USE_TURN
   #include "turn.h"
 #endif
@@ -339,6 +342,9 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_USE_TURN
   TURN_Init();
+#endif
+#if PL_CONFIG_USE_ROBO_NAV
+  RoboNav_Init();
 #endif
 #if PL_CONFIG_USE_REFLECTANCE
   REF_Init();

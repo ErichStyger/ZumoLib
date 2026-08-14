@@ -132,6 +132,9 @@ extern "C" {
 #ifndef PL_CONFIG_MAZE_SOLVING  /* \ TODO */
   #define PL_CONFIG_MAZE_SOLVING            (0 && PL_CONFIG_LINE_FOLLOWING)
 #endif
+#ifndef PL_CONFIG_USE_ROBO_NAV
+  #define PL_CONFIG_USE_ROBO_NAV            (1 && PL_CONFIG_USE_DRIVE)
+#endif
 
 /*
  * ******************************   I2C, OLED, Sensor ******************************

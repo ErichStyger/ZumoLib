@@ -8,6 +8,22 @@
  #ifndef __ROBO_NAV_H__
  #define __ROBO_NAV_H__
 
+ #if PL_CONFIG_USE_SHELL
+  #include "McuShell.h"
+
+/*!
+ * \brief Shell parser routine.
+ * \param cmd Pointer to command line string.
+ * \param handled Pointer to status if command has been handled. Set to TRUE if command was understood.
+ * \param io Pointer to stdio handle
+ * \return Error code, ERR_OK if everything was ok.
+ */
+  uint8_t RoboNav_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell_StdIOType *io);
+#endif
+
+/*!
+ * \brief Module initialization.
+ */
 void RoboNav_Init(void);
 
  #endif /* __ROBO_NAV_H__ */
