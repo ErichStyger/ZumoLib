@@ -32,6 +32,9 @@
 #if PL_CONFIG_USE_MININI
   #include "minIni/McuMinINI.h"
 #endif
+#if PL_CONFIG_USE_ROBO_NAV
+  #include "roboNav.h"
+#endif
 #include "RNet_App.h"
 
 #if PL_CONFIG_USE_MININI
@@ -88,7 +91,6 @@ static void vTimerCallbacktTimeout(TimerHandle_t pxTimer) {
   McuLog_trace("timeout timer expired");
 #if PL_CONFIG_USE_DRIVE
   if (RemoteNordic_GetRobotMoveStatus()!=RemoteNordic_MOVE_STATUS_STOPPED) {
-    DRV_SetMode(DRV_MODE_STOP);
     RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_NOTIFY_VALUE, RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE, RemoteNordic_MOVE_STATUS_STOPPED, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NO_ACK);
   }
 #endif
@@ -142,218 +144,48 @@ void RemoteNordic_SetRobotMoveStatus(RemoteNordic_RobotMoveStatus_e status) {
 static bool RemoteNordic_ButtonIsPressed(void) {
 #if PL_CONFIG_IS_ROBOT
   return Buttons_IsPressed(BUTTONS_USER);
-#else
+#elif PL_CONFIG_IS_ESP32
   return Buttons_IsPressed(BUTTONS_NAV_CENTER);
 #endif
 }
 #endif
 
-void RemoteNordic_OnButtonEvent(uint32_t buttonBits, McuDbnc_EventKinds kind) {
-  /* \todo */
-}
-
 #if PL_CONFIG_IS_ROBOT
 static void RemoteNordic_RobotOnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
-  const char *p = NULL;
-#if PL_CONFIG_USE_DRIVE
-  DRV_Mode newMode = DRV_MODE_NONE;
   RAPP_MSG_DataIDType notifyID = RAPP_MSG_TYPE_DATA_ID_NONE;
   uint32_t notifyValue = 0;
-  int32_t speedL = -1;
-  int32_t speedR = -1;
-  int32_t speed = 0;
-#endif
 
-  if (event==MCUDBNC_EVENT_PRESSED) {
-    switch(button) {
-      case BUTTONS_NAV_UP:
-        p = "pressed up";
-         break;
-      case BUTTONS_NAV_DOWN:
-        p = "pressed down";
-         break;
-      case BUTTONS_NAV_LEFT:
-        p = "pressed left";
-         break;
-      case BUTTONS_NAV_RIGHT:
-        p = "pressed right";
-       break;
-      case BUTTONS_NAV_CENTER:
-        p = "pressed center";
-        break;
-      default:
-        p = NULL;
-        break;
-    } /* switch */
-  } else if (event==MCUDBNC_EVENT_PRESSED_REPEAT) {
-    switch(button) {
-      case BUTTONS_NAV_UP:
-        p = "long up";
-        break;
-      case BUTTONS_NAV_DOWN:
-        p = "long down";
-        break;
-      case BUTTONS_NAV_LEFT:
-        p = "long left";
-        break;
-      case BUTTONS_NAV_RIGHT:
-        p = "long right";
-        break;
-      case BUTTONS_NAV_CENTER:
-        p = "long center";
-        break;
-      default:
-        p = NULL;
-        break;
-    } /* switch */
-  } else if (event==MCUDBNC_EVENT_LONG_PRESSED_REPEAT) {
-   switch(button) {
-      case BUTTONS_NAV_UP:
-        p = "long repeat up";
-        break;
-      case BUTTONS_NAV_DOWN:
-        p = "long repeat down";
-        break;
-      case BUTTONS_NAV_LEFT:
-        p = "long repeat left";
-        break;
-      case BUTTONS_NAV_RIGHT:
-        p = "long repeat right";
-        break;
-      case BUTTONS_NAV_CENTER:
-        p = "long repeat center";
-        break;
-      default:
-        p = NULL;
-        break;
-    } /* switch */
-  } else if (event==MCUDBNC_EVENT_RELEASED) {
-    switch(button) {
-      case BUTTONS_NAV_UP:
-        p = "release up";
-        break;
-      case BUTTONS_NAV_DOWN:
-        p = "release down";
-        break;
-      case BUTTONS_NAV_LEFT:
-        p = "release left";
-        break;
-      case BUTTONS_NAV_RIGHT:
-        p = "release right";
-        break;
-      case BUTTONS_NAV_CENTER:
-        p = "release center";
-        break;
-      default:
-        p = NULL;
-        break;
-    } /* switch */
-  } else if (event==MCUDBNC_EVENT_LONG_RELEASED) {
-    switch(button) {
-      case BUTTONS_NAV_UP:
-        p = "long release up";
-        break;
-      case BUTTONS_NAV_DOWN:
-        p = "long release down";
-        break;
-      case BUTTONS_NAV_LEFT:
-        p = "long release left";
-        break;
-      case BUTTONS_NAV_RIGHT:
-        p = "long release right";
-        break;
-      case BUTTONS_NAV_CENTER:
-        p = "long release center";
-        break;
-      default:
-        p = NULL;
-        break;
-    } /* switch */
-  } /* if-else */
-
-#if PL_CONFIG_USE_DRIVE
-  switch(event) {
-    case MCUDBNC_EVENT_PRESSED:
-      speed = 500;
+  switch(button) {
+    case BUTTONS_NAV_UP:
+      notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
+      notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
       break;
-    case MCUDBNC_EVENT_PRESSED_REPEAT:
-      speed = 1000;
+    case BUTTONS_NAV_DOWN:
+      notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
+      notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
       break;
-    case MCUDBNC_EVENT_LONG_PRESSED:
-      speed = 1500;
+    case BUTTONS_NAV_LEFT:
+      notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
+      notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
       break;
-    case MCUDBNC_EVENT_LONG_PRESSED_REPEAT:
-      speed = 2000;
+    case BUTTONS_NAV_RIGHT:
+      notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
+      notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
       break;
-    case MCUDBNC_EVENT_RELEASED:
-    case MCUDBNC_EVENT_LONG_RELEASED:
+    case BUTTONS_NAV_CENTER:
+      notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
+      notifyValue = RemoteNordic_MOVE_STATUS_STOPPED;
+      break;
     default:
-      speed = 0;
+      notifyID = RAPP_MSG_TYPE_DATA_ID_NONE;
       break;
   } /* switch */
-
-   switch(button) {
-      case BUTTONS_NAV_UP:
-        notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
-        notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
-        speedL = speed;
-        speedR = speed;
-        newMode = DRV_MODE_SPEED;
-        RemoteNordic_TimeoutRestart();
-        break;
-      case BUTTONS_NAV_DOWN:
-        notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
-        notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
-        speedL = -speed;
-        speedR = -speed;
-        newMode = DRV_MODE_SPEED;
-        RemoteNordic_TimeoutRestart();
-        break;
-      case BUTTONS_NAV_LEFT:
-        notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
-        notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
-        speedL = -speed;
-        speedR = speed;
-        newMode = DRV_MODE_SPEED;
-        RemoteNordic_TimeoutRestart();
-        break;
-      case BUTTONS_NAV_RIGHT:
-        notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
-        notifyValue = RemoteNordic_MOVE_STATUS_MOVING;
-        speedL = speed;
-        speedR = -speed;
-        newMode = DRV_MODE_SPEED;
-        RemoteNordic_TimeoutRestart();
-        break;
-      case BUTTONS_NAV_CENTER:
-        notifyID = RAPP_MSG_TYPE_DATA_ID_ROBOT_MOVE;
-        notifyValue = RemoteNordic_MOVE_STATUS_STOPPED;
-        newMode = DRV_MODE_STOP;
-        RemoteNordic_TimeoutStop();
-        break;
-      default:
-        notifyID = RAPP_MSG_TYPE_DATA_ID_NONE;
-        break;
-    } /* switch */
-#endif /* PL_CONFIG_USE_DRIVE */
-
-#if PL_CONFIG_USE_DRIVE
   if (notifyID!=RAPP_MSG_TYPE_DATA_ID_NONE) {
     RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_NOTIFY_VALUE, notifyID, notifyValue, RNETA_GetDestAddr(), RPHY_PACKET_FLAGS_NO_ACK);
   }
-  if (speedL!=-1 && speedR!=-1) {
-    DRV_SetSpeed(speedL, speedR);
-  }
-  if (DRV_GetMode()!=newMode) { /* changed mode? */
-    DRV_SetMode(newMode);
-  }
-#endif /* PL_CONFIG_USE_DRIVE */
-  if (p!=NULL) {
-    McuLog_info(p);
-  #if PL_CONFIG_USE_BUZZER
-    Buzzer_Beep(500, 200);
-  #endif
-  }
+#if PL_CONFIG_USE_ROBO_NAV
+  RoboNav_OnButtonEvent(button, event);
+#endif
 }
 #endif /* PL_CONFIG_IS_ROBOT */
 
