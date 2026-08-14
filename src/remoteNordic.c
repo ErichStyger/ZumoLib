@@ -529,7 +529,7 @@ static uint8_t PrintHelp(const McuShell_StdIOType *io) {
 }
 
 #if PL_CONFIG_USE_NORDIC_RADIO && McuLib_CONFIG_CPU_IS_ESP32
-static uint8_t HandleNavOption(const unsigned char *cmd) {
+static uint8_t HandleNavCommand(const unsigned char *cmd) {
   uint32_t buttonBits = 0;
   McuDbnc_EventKinds kind = MCUDBNC_EVENT_PRESSED;
 
@@ -626,7 +626,7 @@ uint8_t RemoteNordic_ParseCommand(const unsigned char *cmd, bool *handled, const
 #if PL_CONFIG_IS_ESP32
   } else if (McuUtility_strncmp((char*)cmd, (char*)"RemoteNordic nav ", sizeof("RemoteNordic nav ")-1)==0) {
     *handled = true;
-    return HandleNavOption(cmd+sizeof("RemoteNordic nav ")-1);
+    return HandleNavCommand(cmd+sizeof("RemoteNordic nav ")-1);
 #endif
   }
   return ERR_OK;
