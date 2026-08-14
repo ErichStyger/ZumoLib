@@ -85,7 +85,10 @@ extern "C" {
   #define PL_CONFIG_USE_ESP32               (1 && McuESP32_CONFIG_IS_ENABLED && McuESP32_CONFIG_USE_USB_CDC) /*!< 1: using ESP32 HAT on robot */
 #endif
 #ifndef PL_CONFIG_USE_ROBOT2ESP
-  #define PL_CONFIG_USE_ROBOT2ESP           (1 && PL_CONFIG_USE_ESP32) /*!< shell command communication interface between robot and ESP. Requires PL_CONFIG_USE_ESP2ROBOT on the ESP32 */
+  #define PL_CONFIG_USE_ROBOT2ESP           (1 && PL_CONFIG_USE_ESP32) /*!< 1: shell command communication interface between robot and ESP. Requires PL_CONFIG_USE_ESP2ROBOT on the ESP32 */
+#endif
+#ifndef PL_CONFIG_HAS_BATTERY_ADC
+  #define PL_CONFIG_HAS_BATTERY_ADC         (1 && CONFIG_PLATFORM_IS_ZUMO_FX) /*!< 1: if we can measure the battery voltage with an ADC */
 #endif
 #ifndef PL_CONFIG_USE_MOTORS
   #define PL_CONFIG_USE_MOTORS              (1 && PL_CONFIG_IS_ROBOT) /*!< 1: enable DC motor driver */

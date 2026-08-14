@@ -242,7 +242,7 @@ uint8_t RemoteNordic_HandleRemoteRxMessage(RAPP_MSG_Type type, uint8_t size, uin
           BATT_MeasureBatteryVoltage(&value16);
           RAPP_SendIdValuePairMessage(RAPP_MSG_TYPE_QUERY_VALUE_RESPONSE, msgID, (uint32_t)(value16*10), srcAddr, RPHY_PACKET_FLAGS_NONE);
         #if PL_CONFIG_USE_BUZZER
-          BUZ_Beep(500, 200);
+          Buzzer_Beep(500, 200);
         #endif
           break;
       #endif

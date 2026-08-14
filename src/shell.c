@@ -28,6 +28,9 @@
 #if PL_CONFIG_USE_BLINKY
   #include "blinky.h"
 #endif
+#if PL_CONFIG_HAS_BATTERY_ADC
+  #include "battery.h"
+#endif
 #if PL_CONFIG_USE_MOTORS
   #include "motor.h"
 #endif
@@ -155,6 +158,9 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #endif
 #if PL_CONFIG_USE_BLINKY
   Blinky_ParseCommand,
+#endif
+#if PL_CONFIG_HAS_BATTERY_ADC
+  BATT_ParseCommand,
 #endif
 #if PL_CONFIG_USE_IDENTIFY
   ID_ParseCommand,

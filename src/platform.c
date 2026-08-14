@@ -123,6 +123,9 @@
 #if PL_CONFIG_USE_ADOPT_HW
   #include "adaptToHW.h"
 #endif
+#if PL_CONFIG_HAS_BATTERY_ADC
+  #include "battery.h"
+#endif
 
 /* Nordic specific */
 #if PL_CONFIG_USE_SPI
@@ -324,6 +327,9 @@ void Platform_Init(void) {
 #endif
 #if PL_CONFIG_USE_BUZZER
   Buzzer_Init();
+#endif
+#if PL_CONFIG_HAS_BATTERY_ADC
+  BATT_Init();
 #endif
 #if PL_CONFIG_USE_MOTORS
   Motor_Init();
