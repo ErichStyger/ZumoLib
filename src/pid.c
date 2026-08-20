@@ -8,7 +8,7 @@
 #include "platform.h"
 #if PL_CONFIG_USE_PID
 #include "pid.h"
-#include "Motor.h"
+#include "motor.h"
 #include "McuUtility.h"
 #include "reflectance.h"
 

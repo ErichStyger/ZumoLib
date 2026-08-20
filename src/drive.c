@@ -25,7 +25,7 @@
   #include "McuPercepio.h"
 #endif
 #if PL_CONFIG_USE_QUADRATURE
-  #include "QuadCounter.h"
+  #include "quadCounter.h"
 #endif
 #include "shell.h"
 

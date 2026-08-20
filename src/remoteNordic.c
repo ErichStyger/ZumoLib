@@ -15,7 +15,7 @@
 #include "McuLog.h"
 #include "shell.h"
 #if PL_CONFIG_HAS_BATTERY_ADC
-  #include "Battery.h"
+  #include "battery.h"
 #endif
 #if PL_CONFIG_USE_BUZZER
   #include "buzzer.h"
@@ -24,10 +24,10 @@
 #include "leds.h"
 #include "McuLED.h"
 #if PL_CONFIG_USE_DRIVE
-  #include "Drive.h"
+  #include "drive.h"
 #endif
 #if PL_CONFIG_HAS_LCD
-  #include "LCD.h"
+  #include "lcd.h"
 #endif
 #if PL_CONFIG_USE_MININI
   #include "minIni/McuMinINI.h"

@@ -9,7 +9,7 @@
 
 #include "platform.h"
 #if PL_CONFIG_HAS_BATTERY_ADC
-#include "Battery.h"
+#include "battery.h"
 #include "fsl_adc16.h"
 #include "McuShell.h"
 #include "McuRTOS.h"

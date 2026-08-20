@@ -9,7 +9,7 @@
 #include "platform.h" /* interface to the platform */
 #if PL_CONFIG_USE_TACHO
 #include "tacho.h"    /* our own interface */
-#include "QuadCounter.h"
+#include "quadCounter.h"
 #if PL_CONFIG_USE_SHELL
   #include "McuShell.h"
 #endif
