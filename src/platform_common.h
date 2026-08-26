@@ -47,7 +47,7 @@ extern "C" {
   #define PL_CONFIG_USE_SHELL               (0) /*!< 1: enable command line shell */
 #endif
 #ifndef PL_CONFIG_USE_RTT
-  #define PL_CONFIG_USE_RTT                 (0) /*!< 1: enable RTT (SEGGER Real-Time Transfer), including for shell */
+  #define PL_CONFIG_USE_RTT                 (1 && PL_CONFIG_IS_ROBOT) /*!< 1: enable RTT (SEGGER Real-Time Transfer), including for shell */
 #endif
 #ifndef PL_CONFIG_USE_SHELL_UART
   #define PL_CONFIG_USE_SHELL_UART          (1) /*!< 1: enable UART for the shell */
