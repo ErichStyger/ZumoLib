@@ -167,7 +167,13 @@ static char const *string_desc_arr[] = {
     NULL,
 
     "Erich Styger",
-    "Zumo K22 Robot",
+  #if CONFIG_PLATFORM_IS_ZUMO_FX
+    "ESP Zumo K22FX Robot",
+  #elif CONFIG_PLATFORM_IS_ZUMO_FN
+    "ESP Zumo K22FN Robot",
+  #else
+    "ESP Zumo Robot",
+  #endif
     "000001",
     "Zumo CDC"
 };
