@@ -366,6 +366,9 @@ static void ConfigureLogger(void) {
     #endif
   #elif PL_CONFIG_USE_SHELL_UART /* only UART */
     McuLog_set_console(&McuShellUart_stdio, 0);
+    #if McuLog_CONFIG_USE_COLOR && McuLib_CONFIG_CPU_IS_ESP32
+    McuLog_set_channel_color(0, true); /* enable color for channel zero */
+    #endif
   #elif PL_CONFIG_USE_RTT /* only RTT */
     McuLog_set_console(McuRTT_GetStdio(), 0);
   #endif
