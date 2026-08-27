@@ -35,7 +35,7 @@
 
   #define BUTTONS_CONFIG_INTERRUPT_LINE      PORTA_IRQn
   #define BUTTONS_CONFIG_INTERRUPT_HANDLER   PORTA_IRQHandler
-#elif McuLib_CONFIG_CPU_IS_ESP32
+#elif McuLib_CONFIG_CPU_IS_ESP32 && (CONFIG_ESP32_IS_REMOTE || CONFIG_ESP32_IS_FN_HAT)
   /* ESP32: Only pins that support both input & output have integrated pull-up and pull-down resistors. Input-only GPIOs 34-39 do not. */
   #define BUTTONS_PINS_NAVUP_PIN         GPIO_NUM_25
   #define BUTTONS_PINS_NAVDOWN_PIN       GPIO_NUM_39  /* hardware bug: with WiFi enabled, it triggers an interrupt if using interrupts! */

@@ -69,7 +69,7 @@ extern "C" {
  * ******************************   Buttons ******************************
  */
 #ifndef PL_CONFIG_USE_BUTTONS
-  #define PL_CONFIG_USE_BUTTONS             (1 && (CONFIG_ESP32_IS_REMOTE || CONFIG_PLATFORM_IS_ZUMO_FN || CONFIG_PLATFORM_IS_ZUMO_FX)) /*!< 1: enable button driver */
+  #define PL_CONFIG_USE_BUTTONS             (1 && (CONFIG_ESP32_IS_REMOTE || CONFIG_ESP32_IS_FN_HAT || CONFIG_PLATFORM_IS_ZUMO_FN || CONFIG_PLATFORM_IS_ZUMO_FX)) /*!< 1: enable button driver */
 #endif
 #ifndef PL_CONFIG_USE_BUTTONS_IRQ
   #define PL_CONFIG_USE_BUTTONS_IRQ         (1 && PL_CONFIG_USE_BUTTONS && !(PL_CONFIG_IS_ESP32 && PL_CONFIG_USE_WIFI)) /* if using button interrupts */
@@ -149,7 +149,7 @@ extern "C" {
   #define PL_CONFIG_USE_HW_I2C              (1 && PL_CONFIG_USE_I2C && CONFIG_USE_HW_I2C)
 #endif
 #ifndef PL_CONFIG_USE_OLED
-  #define PL_CONFIG_USE_OLED                (1 && PL_CONFIG_USE_I2C && CONFIG_ESP32_IS_REMOTE)
+  #define PL_CONFIG_USE_OLED                (1 && PL_CONFIG_USE_I2C && (CONFIG_ESP32_IS_REMOTE || CONFIG_ESP32_IS_FN_HAT))
 #endif
 #ifndef PL_CONFIG_USE_SENSIRION
   #define PL_CONFIG_USE_SENSIRION           (0 && PL_CONFIG_USE_I2C && CONFIG_ESP32_IS_REMOTE)
