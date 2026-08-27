@@ -143,7 +143,7 @@ extern "C" {
  * ******************************   I2C, OLED, Sensor ******************************
  */
 #ifndef PL_CONFIG_USE_I2C
-  #define PL_CONFIG_USE_I2C                 (1 && CONFIG_ESP32_IS_REMOTE) /*!< 1: if using I2C bus */
+  #define PL_CONFIG_USE_I2C                 (1 && (CONFIG_ESP32_IS_REMOTE || CONFIG_ESP32_IS_FN_HAT)) /*!< 1: if using I2C bus */
 #endif
 #ifndef PL_CONFIG_USE_HW_I2C
   #define PL_CONFIG_USE_HW_I2C              (1 && PL_CONFIG_USE_I2C && CONFIG_USE_HW_I2C)
