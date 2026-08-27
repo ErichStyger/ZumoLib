@@ -28,6 +28,7 @@
 
 #if PL_CONFIG_USE_DEBOUNCE
 void AppEsp_OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) { /* called from debouncing */
+  McuLog_info("ESP button: button:%d event:%d", button, event);
 #if PL_CONFIG_USE_REMOTE_NORDIC
   RemoteNordic_ESP32OnButtonEvent(button, event);
 #endif
