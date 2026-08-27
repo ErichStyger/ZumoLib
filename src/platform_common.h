@@ -199,7 +199,7 @@ extern "C" {
   #define PL_CONFIG_USE_UDP_SERVER_BACKEND  (1 && PL_CONFIG_USE_UDP_SERVER) /*!< 1: use backend and callback for UDP messages*/
 #endif
 #ifndef PL_CONFIG_USE_UDP_CLIENT
-  #define PL_CONFIG_USE_UDP_CLIENT          (0 && PL_CONFIG_USE_WIFI && MCU_UDP_CLIENT_CONFIG_ENABLED) /*!< 1: UDP client implementation */
+  #define PL_CONFIG_USE_UDP_CLIENT          (1 && PL_CONFIG_USE_WIFI && MCU_UDP_CLIENT_CONFIG_ENABLED && CONFIG_ESP32_IS_REMOTE) /*!< 1: UDP client implementation */
 #endif
 #ifndef PL_CONFIG_USE_MQTT_CLIENT
   #define PL_CONFIG_USE_MQTT_CLIENT         (1 && PL_CONFIG_USE_WIFI && MCU_MQTT_CLIENT_CONFIG_ENABLED)   /*!< 1: if running MQTT client */
