@@ -168,7 +168,7 @@ static void Scan(CMD_ParserState_e *state, unsigned char ch, unsigned char *buf,
   } /* for */
 }
 
-static void RemoteToEspTask(void *pv) {
+static void RobotToEspTask(void *pv) {
   unsigned char buf[64];
   static CMD_ParserState_e state = CMD_PARSER_INIT;
   unsigned char ch;
@@ -227,7 +227,7 @@ void RobotToEsp_Deinit(void) {
 }
 
 void RobotToEsp_Init(void) {
-  if (xTaskCreate(RemoteToEspTask, "Remote2Esp", 1024/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS) {
+  if (xTaskCreate(RobotToEspTask, "Robot2Esp", 1024/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+1, NULL) != pdPASS) {
     for(;;){} /* error */
   }
   RobotToEsp_RxFromESP_Queue = xQueueCreate(ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_LENGTH, ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_ITEM_SIZE);
