@@ -190,7 +190,7 @@ static void RemoteNordic_RobotOnButtonEvent(Buttons_e button, McuDbnc_EventKinds
 #endif /* PL_CONFIG_IS_ROBOT */
 
 #if McuLib_CONFIG_CPU_IS_ESP32
-void RemoteNordic_ESP32OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
+void RemoteNordic_EspOnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) {
 #if PL_CONFIG_HAS_LCD /* navigation button messages are handled by the LCD module and forwarded if configured as such */
   LCD_OnButtonEvent(button, event);
 #elif PL_CONFIG_USE_NORDIC_RADIO /* send directly navigation button messages */
@@ -391,7 +391,7 @@ static uint8_t HandleNavCommand(const unsigned char *cmd) {
     return ERR_FAILED;
   }
 #if McuLib_CONFIG_CPU_IS_ESP32
-  RemoteNordic_ESP32OnButtonEvent(buttonBits, kind);
+  RemoteNordic_EspOnButtonEvent(buttonBits, kind);
   return ERR_OK;
 #else
   /* handle for robot */

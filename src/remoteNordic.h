@@ -52,7 +52,7 @@ extern "C" {
      * \param button Button that triggered the event.
      * \param event Debounce event kind.
      */
-    void RemoteNordic_ESP32OnButtonEvent(Buttons_e button, McuDbnc_EventKinds event);
+    void RemoteNordic_EspOnButtonEvent(Buttons_e button, McuDbnc_EventKinds event);
   #endif
 
   typedef enum RemoteNordic_RobotMoveStatus_e {
