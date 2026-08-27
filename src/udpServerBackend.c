@@ -34,7 +34,7 @@ static McuShell_ConstStdIOType esp_stdio = {
   .stdErr = (McuShell_StdIO_OutErr_FctType)esp_io_buf_SendChar,
   .keyPressed = esp_io_buf_CharPresent, /* if input is not empty */
 #if McuShell_CONFIG_ECHO_ENABLED
-  .echoEnabled = false, /* echo enabled for idf.py monitor */
+  .echoEnabled = false,
 #endif
 };
 
