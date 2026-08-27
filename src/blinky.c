@@ -16,7 +16,7 @@ static TaskHandle_t taskHandle;
 static bool blinkyIsRunning = false;
 
 #define LED_OFF_TIME_MS    1000
-static uint32_t onTimeMs = 10; /* default on time of LED, used for network status indication */
+static uint32_t onTimeMs = 500; /* default on time of LED, used for network status indication */
 
 void Blinky_SetOnTime(uint32_t ms) {
   onTimeMs = ms;
