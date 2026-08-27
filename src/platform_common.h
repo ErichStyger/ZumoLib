@@ -207,9 +207,11 @@ extern "C" {
 #ifndef PL_CONFIG_USE_MQTT_SENSOR
   #define PL_CONFIG_USE_MQTT_SENSOR         (1 && PL_CONFIG_USE_WIFI && PL_CONFIG_USE_MQTT_CLIENT && PL_CONFIG_USE_SENSIRION) /*!< 1: using sensor MQTT application */
 #endif
-
 #ifndef PL_CONFIG_USE_ESP2ROBOT
   #define PL_CONFIG_USE_ESP2ROBOT           (1 && (CONFIG_ESP32_IS_FX_HAT || CONFIG_ESP32_IS_FN_HAT)) /*!< 1: use command channel from ESP to robot over UART. Requires PL_CONFIG_USE_ROBOT2ESP on the robot. */
+#endif
+#ifndef PL_CONFIG_USE_REMOTE_WIFI_UDP
+  #define PL_CONFIG_USE_REMOTE_WIFI_UDP     (1 && CONFIG_ESP32_IS_REMOTE) /*!< 1: use remote as controller for the robot over UDP */
 #endif
 /*
  * ******************************   special hardware related settings ******************************
