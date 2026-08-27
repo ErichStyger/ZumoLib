@@ -29,10 +29,12 @@ void RemoteWifiUdp_EspOnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) 
   if (event!=MCUDBNC_EVENT_PRESSED) {
     return;
   }
+#if 0
   if (McuUdpClient_Send(host, port, "@esp:esp2robot sendcmd buzzer buz 100 200!", rxBuf, sizeof(rxBuf))!=ERR_OK) {
     McuLog_error("failed sending udp remote message");
   }
-  McuUtility_strcpy((unsigned char*)msg, sizeof(msg), (unsigned char*)"@esp:esp2robot nav ");
+#endif
+  McuUtility_strcpy((unsigned char*)msg, sizeof(msg), (unsigned char*)"@esp:#esp2robot nav ");
   switch(button) {
     case BUTTONS_NAV_UP:      McuUtility_chcat((unsigned char*)msg, sizeof(msg), 'u'); break;
     case BUTTONS_NAV_DOWN:    McuUtility_chcat((unsigned char*)msg, sizeof(msg), 'd'); break;
@@ -41,9 +43,11 @@ void RemoteWifiUdp_EspOnButtonEvent(Buttons_e button, McuDbnc_EventKinds event) 
     case BUTTONS_NAV_CENTER:  McuUtility_chcat((unsigned char*)msg, sizeof(msg), 'c'); break;
     default: break;
   }
-  McuUtility_chcat((unsigned char*)msg, sizeof(msg), '!');
+  McuUtility_strcat((unsigned char*)msg, sizeof(msg), (unsigned char*)" on!");
   if (McuUdpClient_Send(host, port, msg, rxBuf, sizeof(rxBuf))!=ERR_OK) {
     McuLog_error("failed sending udp remote nav message '%s'", msg);
+  } else {
+    McuLog_info("sent nav message `%s`, response `%s`", msg, rxBuf);
   }
 }
 #endif
