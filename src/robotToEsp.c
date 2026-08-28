@@ -25,9 +25,9 @@
 static QueueHandle_t RobotToEsp_RxFromESP_Queue; /* queue for data received from the ESP, to be read by the robot */
 static QueueHandle_t RobotToEsp_TxToESP_Queue;   /* queue for the data to be sent from the robot as response for the ESP commands */
 
-#define ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_LENGTH      64 /* items in queue */
+#define ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_LENGTH      128 /* items in queue */
 #define ROBOT_TO_ESP_UART_RX_FROM_ESP_QUEUE_ITEM_SIZE   1  /* each item is a single character */
-#define ROBOT_TO_ESP_UART_TX_FROM_ESP_QUEUE_LENGTH      64 /* items in queue */
+#define ROBOT_TO_ESP_UART_TX_FROM_ESP_QUEUE_LENGTH      128 /* items in queue */
 #define ROBOT_TO_ESP_UART_TX_FROM_ESP_QUEUE_ITEM_SIZE   1  /* each item is a single character */
 
 /* called by the gateway task to put a char from the ESP into the queue for the remote */
