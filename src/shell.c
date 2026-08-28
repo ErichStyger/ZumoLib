@@ -351,30 +351,6 @@ void Shell_SendString(const unsigned char *str) {
   Shell_SendStringToIO(str, ios[0].stdio);
 }
 
-static void ConfigureLogger(void) {
-#if McuLog_CONFIG_IS_ENABLED
-	#if McuLog_CONFIG_NOF_CONSOLE_LOGGER==2 && PL_CONFIG_USE_RTT && PL_CONFIG_USE_SHELL_UART /* two loggers possible */
-    McuLog_set_console(McuRTT_GetStdio(), 0);
-    #if McuLog_CONFIG_USE_COLOR
-    McuLog_set_channel_color(0, true); /* enable color for channel zero */
-    #endif
-    McuLog_set_console(&McuShellUart_stdio, 1);
-  #elif 0 && McuLib_CONFIG_CPU_IS_ESP32
-    McuLog_set_console(&Uart_stdio, 0);
-    #if McuLog_CONFIG_USE_COLOR
-    McuLog_set_channel_color(0, true); /* enable color for channel zero */
-    #endif
-  #elif PL_CONFIG_USE_SHELL_UART /* only UART */
-    McuLog_set_console(&McuShellUart_stdio, 0);
-    #if McuLog_CONFIG_USE_COLOR && McuLib_CONFIG_CPU_IS_ESP32
-    McuLog_set_channel_color(0, true); /* enable color for channel zero */
-    #endif
-  #elif PL_CONFIG_USE_RTT /* only RTT */
-    McuLog_set_console(McuRTT_GetStdio(), 0);
-  #endif
-#endif
-}
-
 void Shell_Init(void) {
 #if PL_CONFIG_USE_ESP2ROBOT
   Shell_stdioMutex = xSemaphoreCreateRecursiveMutex();
@@ -384,7 +360,6 @@ void Shell_Init(void) {
   }
   vQueueAddToRegistry(SHELL_stdioMutex, "ShellStdIoMutex");
 #endif
-  ConfigureLogger();
   if (xTaskCreate(ShellTask, "Shell", 
     #if PL_CONFIG_IS_ROBOT
       (2*1024)/sizeof(StackType_t),

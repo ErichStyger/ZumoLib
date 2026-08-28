@@ -252,6 +252,30 @@ static void Esp32ProgrammingCallback(bool isProgramming) {
   };
 #endif
 
+static void ConfigureLogger(void) {
+#if McuLog_CONFIG_IS_ENABLED
+	#if McuLog_CONFIG_NOF_CONSOLE_LOGGER==2 && PL_CONFIG_USE_RTT && PL_CONFIG_USE_SHELL_UART /* two loggers possible */
+    McuLog_set_console(McuRTT_GetStdio(), 0);
+    #if McuLog_CONFIG_USE_COLOR
+    McuLog_set_channel_color(0, true); /* enable color for channel zero */
+    #endif
+    McuLog_set_console(&McuShellUart_stdio, 1);
+  #elif 0 && McuLib_CONFIG_CPU_IS_ESP32
+    McuLog_set_console(&Uart_stdio, 0);
+    #if McuLog_CONFIG_USE_COLOR
+    McuLog_set_channel_color(0, true); /* enable color for channel zero */
+    #endif
+  #elif PL_CONFIG_USE_SHELL_UART /* only UART */
+    McuLog_set_console(&McuShellUart_stdio, 0);
+    #if McuLog_CONFIG_USE_COLOR && McuLib_CONFIG_CPU_IS_ESP32
+    McuLog_set_channel_color(0, true); /* enable color for channel zero */
+    #endif
+  #elif PL_CONFIG_USE_RTT /* only RTT */
+    McuLog_set_console(McuRTT_GetStdio(), 0);
+  #endif
+#endif
+}
+
 void Platform_Init(void) {
   McuLib_Init();
   McuWait_Init();
@@ -277,6 +301,7 @@ void Platform_Init(void) {
   McuGPIO_Init();
   McuLED_Init();
   McuLog_Init();
+  ConfigureLogger();
 #if PL_CONFIG_USE_MCUFLASH
   McuFlash_Init();
   #if PL_CONFIG_IS_ROBOT
