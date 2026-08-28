@@ -60,7 +60,7 @@ extern int tinyusb_rtt_printf(const char *format, ...);
 #define CFG_TUSB_DEBUG_PRINTF tinyusb_rtt_printf
 
 // Default is max speed that hardware controller could support with on-chip PHY
-#define CFG_TUD_MAX_SPEED     	OPT_MODE_DEFAULT_SPEED
+#define CFG_TUD_MAX_SPEED     OPT_MODE_DEFAULT_SPEED
 
 #define CFG_TUH_MAX_SPEED 		OPT_MODE_DEFAULT_SPEED
 
