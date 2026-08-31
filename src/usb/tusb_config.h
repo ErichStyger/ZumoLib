@@ -105,7 +105,7 @@ extern int tinyusb_rtt_printf(const char *format, ...);
   // CDC Endpoint transfer buffer size, more is faster
   #define CFG_TUD_CDC_EP_BUFSIZE   (1*1024)
 
-  #define CFG_TUD_TASK_QUEUE_SZ    (1024) /* default 16 */
+  #define CFG_TUD_TASK_QUEUE_SZ    (64) /* default 16 */
 #endif
 
 #if CFG_TUD_MSC
