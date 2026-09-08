@@ -7,6 +7,7 @@
 
 #include "platform.h"
 #if PL_CONFIG_IS_ROBOT
+#include "McuRTOS.h"
 #include "appRobot.h"
 #if PL_CONFIG_USE_REFLECTANCE
   #include "reflectance.h"
