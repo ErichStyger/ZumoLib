@@ -135,6 +135,9 @@
 #if PL_CONFIG_USE_ROBOT2ESP
   #include "robotToEsp.h"
 #endif
+#if PL_CONFIG_USE_NEO_PIXEL_HW
+  #include "NeoPixel.h"
+#endif
 
 static const McuShell_ParseCommandCallback CmdParserTable[] =
 {
@@ -228,6 +231,9 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #endif
 #if PL_CONFIG_USE_NTP_CLIENT
   McuNtpClient_ParseCommand,
+#endif
+#if PL_CONFIG_USE_NEO_PIXEL_HW
+  NEO_ParseCommand,
 #endif
 #if PL_CONFIG_USE_SENSIRION && PL_CONFIG_USE_SHT31
   McuSHT31_ParseCommand,

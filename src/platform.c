@@ -193,7 +193,10 @@
 #if PL_CONFIG_USE_RS485_SHELL
   #include "rs485.h"
 #endif
-
+#if PL_CONFIG_USE_NEO_PIXEL_HW
+  #include "NeoPixel.h"
+  #include "PixelDMA.h"
+#endif
 #if PL_CONFIG_IS_ESP32
   #include "appEsp.h"
 #elif PL_CONFIG_IS_ROBOT
@@ -468,6 +471,10 @@ void Platform_Init(void) {
   AppEsp_Init();
 #elif PL_CONFIG_IS_ROBOT
   AppRobot_Init();
+#endif
+#if PL_CONFIG_USE_NEO_PIXEL_HW
+  PIXDMA_Init();
+  NEO_Init();
 #endif
   Application_Init();
 }

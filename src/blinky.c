@@ -11,6 +11,9 @@
 #include "McuUtility.h"
 #include "McuLog.h"
 #include "leds.h"
+#if PL_CONFIG_USE_NEO_PIXEL_HW
+  #include "NeoPixel.h"
+#endif
 
 static TaskHandle_t taskHandle;
 static bool blinkyIsRunning = false;
@@ -82,36 +85,45 @@ static void blinkyTask(void *pv) {
   blinkyIsRunning = true;
   McuLog_info("started blinky task");
   for(;;) {
-#if LEDS_CONFIG_HAS_LEFT_RED_LED
+  #if LEDS_CONFIG_HAS_LEFT_RED_LED
     Leds_On(LEDS_LEFT_RED);
     vTaskDelay(pdMS_TO_TICKS(onTimeMs));
     Leds_Off(LEDS_LEFT_RED);
-#endif
-#if LEDS_CONFIG_HAS_RIGHT_RED_LED
+  #endif
+  #if LEDS_CONFIG_HAS_RIGHT_RED_LED
     Leds_On(LEDS_RIGHT_RED);
     vTaskDelay(pdMS_TO_TICKS(onTimeMs));
     Leds_Off(LEDS_RIGHT_RED);
-#endif
-#if LEDS_CONFIG_HAS_RED_LED
+  #endif
+  #if LEDS_CONFIG_HAS_RED_LED
     Leds_On(LEDS_RED);
     vTaskDelay(pdMS_TO_TICKS(onTimeMs));
     Leds_Off(LEDS_RED);
-#endif
-#if LEDS_CONFIG_HAS_GREEN_LED
+  #endif
+  #if LEDS_CONFIG_HAS_GREEN_LED
     Leds_On(LEDS_GREEN);
     vTaskDelay(pdMS_TO_TICKS(onTimeMs));
     Leds_Off(LEDS_GREEN);
-#endif
-#if LEDS_CONFIG_HAS_BLUE_LED
+  #endif
+  #if LEDS_CONFIG_HAS_BLUE_LED
     Leds_On(LEDS_BLUE);
     vTaskDelay(pdMS_TO_TICKS(onTimeMs));
     Leds_Off(LEDS_BLUE);
-#endif
-#if LEDS_CONFIG_HAS_ONBOARD_LED
+  #endif
+  #if LEDS_CONFIG_HAS_ONBOARD_LED
     Leds_On(LEDS_ONBOARD);
     vTaskDelay(pdMS_TO_TICKS(onTimeMs));
     Leds_Off(LEDS_ONBOARD);
-#endif
+  #endif
+  #if 0 && PL_CONFIG_USE_NEO_PIXEL_HW
+    NEO_ClearAllPixel();
+    NEO_SetPixelColor(0, 0, 0xff);
+    NEO_TransferPixels();
+
+    NEO_ClearAllPixel();
+    NEO_SetPixelColor(0, 1, 0xff);
+    NEO_TransferPixels();
+  #endif
     vTaskDelay(pdMS_TO_TICKS(LED_OFF_TIME_MS));
   }
 }
