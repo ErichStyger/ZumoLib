@@ -139,6 +139,9 @@ extern "C" {
   #define PL_CONFIG_USE_ROBO_NAV            (1 && PL_CONFIG_USE_DRIVE)
 #endif
 
+/* NeoPixel support */
+#define PL_CONFIG_USE_NEO_PIXEL_HW          (1 && CONFIG_PLATFORM_IS_ZUMO_FN) /*!< 1: enable NeoPixel hardware support */
+
 /*
  * ******************************   I2C, OLED, Sensor ******************************
  */
