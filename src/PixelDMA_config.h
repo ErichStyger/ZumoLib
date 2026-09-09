@@ -44,6 +44,8 @@
   #define PIXEL_DMA_CONFIG_NEOPIXEL_PIN       16u   /*!< Pin number for lane */
 #endif
 
-#define PIXEL_DMA_CONFIG_INVERT_WAVEFORM   (1)  /* if the wave form needs to be inverted because of an inverting level shifter */
+#ifndef PIXEL_DMA_CONFIG_INVERT_WAVEFORM
+  #define PIXEL_DMA_CONFIG_INVERT_WAVEFORM   (1)  /* if the wave form needs to be inverted because of an inverting level shifter */
+#endif
 
 #endif /* PIXEL_DMA_CONFIG_H_ */

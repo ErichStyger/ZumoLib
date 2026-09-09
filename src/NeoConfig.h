@@ -13,16 +13,16 @@
 
 #ifndef NEOC_LANE_START
   #if PL_CONFIG_USE_NEO_PIXEL_FRONT
-    #define NEOC_LANE_START        (3)  /* PTE3, this is the first GPIO pin used */
+    #define NEOC_LANE_START        (3)  /* PTE3 (modulo 8!, because we use 8bit in the lane), this is the first GPIO pin used */
   #else
-    #define NEOC_LANE_START        (16)  /* PTB16, this is the first GPIO pin used */
+    #define NEOC_LANE_START        (0)  /* PTB16 (modulo 8!, because we use 8bit in the lane), this is the first GPIO pin used */
   #endif
 #endif
 #ifndef NEOC_LANE_END
   #if PL_CONFIG_USE_NEO_PIXEL_FRONT
-    #define NEOC_LANE_END          (3)  /* PTE3, this is the last GPIO pin used */
+    #define NEOC_LANE_END          (3)  /* PTE3 (modulo 8!, because we use 8bit in the lane), this is the last GPIO pin used */
   #else
-    #define NEOC_LANE_END          (16)  /* PTB16, this is the last GPIO pin used */
+    #define NEOC_LANE_END          (0)  /* PTB16 (modulo 8!, because we use 8bit in the lane), this is the last GPIO pin used */
   #endif
 #endif
 #ifndef NEOC_NOF_LEDS_IN_LANE
