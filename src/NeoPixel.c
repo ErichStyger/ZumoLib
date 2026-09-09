@@ -120,6 +120,10 @@ uint8_t NEO_SetPixelRGB(NEO_PixelIdxT lane, NEO_PixelIdxT pos, uint8_t red, uint
   if (!(lane>=NEO_LANE_START && lane<=NEO_LANE_END) || pos>=NEO_NOF_LEDS_IN_LANE) {
     return ERR_RANGE; /* error, out of range */
   }
+  if (lane>7) {
+    /* lane is the GPIO pin number, and transmitBuf only holds 8 bits (one byte lane of the DMA port). If GPIO number is >7, use an offset */
+    return ERR_RANGE;
+  }
   idx = pos*NEO_NOF_BITS_PIXEL; /* find index in array: Y==0 is at index 0, Y==1 is at index 24, and so on */
   /* green */
   for(i=0;i<8;i++) {
@@ -161,6 +165,10 @@ uint8_t NEO_SetPixelWRGB(NEO_PixelIdxT lane, NEO_PixelIdxT pos, uint8_t white, u
 
   if (!(lane>=NEO_LANE_START && lane<=NEO_LANE_END) || pos>=NEO_NOF_LEDS_IN_LANE) {
     return ERR_RANGE; /* error, out of range */
+  }
+  if (lane>7) {
+    /* lane is the GPIO pin number, and transmitBuf only holds 8 bits (one byte lane of the DMA port). If GPIO number is >7, use an offset */
+    return ERR_RANGE;
   }
   idx = pos*NEO_NOF_BITS_PIXEL; /* find index in array: Y==0 is at index 0, Y==1 is at index 24, and so on */
   /* green */
@@ -216,6 +224,10 @@ uint8_t NEO_GetPixelRGB(NEO_PixelIdxT lane, NEO_PixelIdxT pos, uint8_t *redP, ui
   if (!(lane>=NEO_LANE_START && lane<=NEO_LANE_END) || pos>=NEO_NOF_LEDS_IN_LANE) {
     return ERR_RANGE; /* error, out of range */
   }
+  if (lane>7) {
+    /* lane is the GPIO pin number, and transmitBuf only holds 8 bits (one byte lane of the DMA port). If GPIO number is >7, use an offset */
+    return ERR_RANGE;
+  }
   red = green = blue = 0; /* init */
   idx = pos*NEO_NOF_BITS_PIXEL;
   /* green */
@@ -256,6 +268,10 @@ uint8_t NEO_GetPixelWRGB(NEO_PixelIdxT lane, NEO_PixelIdxT pos, uint8_t *whiteP,
 
   if (!(lane>=NEO_LANE_START && lane<=NEO_LANE_END) || pos>=NEO_NOF_LEDS_IN_LANE) {
     return ERR_RANGE; /* error, out of range */
+  }
+  if (lane>7) {
+    /* lane is the GPIO pin number, and transmitBuf only holds 8 bits (one byte lane of the DMA port). If GPIO number is >7, use an offset */
+    return ERR_RANGE;
   }
   red = green = blue = white = 0; /* init */
   idx = pos*NEO_NOF_BITS_PIXEL;
