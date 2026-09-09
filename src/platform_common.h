@@ -140,8 +140,15 @@ extern "C" {
 #endif
 
 /* NeoPixel support */
-#define PL_CONFIG_USE_NEO_PIXEL_HW          (1 && CONFIG_PLATFORM_IS_ZUMO_FN) /*!< 1: enable NeoPixel hardware support */
-
+#ifndef PL_CONFIG_USE_NEO_PIXEL_HW
+  #define PL_CONFIG_USE_NEO_PIXEL_HW          (1 && CONFIG_PLATFORM_IS_ZUMO_FN) /*!< 1: enable NeoPixel hardware support */
+#endif
+#ifndef PL_CONFIG_USE_NEO_PIXEL_FRONT
+  #define PL_CONFIG_USE_NEO_PIXEL_FRONT       (1 && PL_CONFIG_USE_NEO_PIXEL_HW) /*!< 1: enable front sensor pixels */
+#endif
+#ifndef PL_CONFIG_USE_NEO_PIXEL_BACK
+  #define PL_CONFIG_USE_NEO_PIXEL_BACK        (1 && PL_CONFIG_USE_NEO_PIXEL_HW) /*!< 1: enable back pixels */
+#endif
 /*
  * ******************************   I2C, OLED, Sensor ******************************
  */

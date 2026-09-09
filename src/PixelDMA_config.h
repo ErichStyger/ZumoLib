@@ -35,13 +35,14 @@
 #endif
 
 #if PL_CONFIG_USE_NEO_PIXEL_FRONT
-  #define PIXEL_DMA_CONFIG_NEOPIXEL_GPIO      GPIOE /*!< GPIO peripheral for lane pin */
-  #define PIXEL_DMA_CONFIG_NEOPIXEL_PORT      PORTE /*!< PORT peripheral for lane pin */
-  #define PIXEL_DMA_CONFIG_NEOPIXEL_PIN       3u    /*!< Pin number for lane pin */
-#else
-  #define PIXEL_DMA_CONFIG_NEOPIXEL_GPIO      GPIOB /*!< GPIO peripheral for lane pin */
-  #define PIXEL_DMA_CONFIG_NEOPIXEL_PORT      PORTB /*!< PORT peripheral for lane pin */
-  #define PIXEL_DMA_CONFIG_NEOPIXEL_PIN       16u   /*!< Pin number for lane */
+  #define PIXEL_DMA_CONFIG_NEOPIXEL_FRONT_GPIO      GPIOE /*!< GPIO peripheral for lane pin */
+  #define PIXEL_DMA_CONFIG_NEOPIXEL_FRONT_PORT      PORTE /*!< PORT peripheral for lane pin */
+  #define PIXEL_DMA_CONFIG_NEOPIXEL_FRONT_PIN       3u    /*!< Pin number for lane pin */
+#endif
+#if PL_CONFIG_USE_NEO_PIXEL_BACK
+  #define PIXEL_DMA_CONFIG_NEOPIXEL_BACK_GPIO       GPIOB /*!< GPIO peripheral for lane pin */
+  #define PIXEL_DMA_CONFIG_NEOPIXEL_BACK_PORT       PORTB /*!< PORT peripheral for lane pin */
+  #define PIXEL_DMA_CONFIG_NEOPIXEL_BACK_PIN        16u   /*!< Pin number for lane */
 #endif
 
 #ifndef PIXEL_DMA_CONFIG_INVERT_WAVEFORM
