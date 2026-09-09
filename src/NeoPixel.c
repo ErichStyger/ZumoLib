@@ -490,7 +490,11 @@ uint8_t NEO_ParseCommand(const unsigned char *cmd, bool *handled, const McuShell
         }
         NEO_SetPixelColor((NEO_PixelIdxT)lane, (NEO_PixelIdxT)pos, color);
         NEO_TransferPixels();
+      } else {
+        return ERR_FAILED;
       }
+    } else {
+      return ERR_FAILED;
     }
     return ERR_OK;
   }
