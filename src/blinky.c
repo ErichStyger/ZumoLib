@@ -115,13 +115,9 @@ static void blinkyTask(void *pv) {
     vTaskDelay(pdMS_TO_TICKS(onTimeMs));
     Leds_Off(LEDS_ONBOARD);
   #endif
-  #if 0 && PL_CONFIG_USE_NEO_PIXEL_HW
+  #if 1 && PL_CONFIG_USE_NEO_PIXEL_HW
     NEO_ClearAllPixel();
-    NEO_SetPixelColor(0, 0, 0xff);
-    NEO_TransferPixels();
-
-    NEO_ClearAllPixel();
-    NEO_SetPixelColor(0, 1, 0xff);
+    NEO_SetAllPixelColor(0xff);
     NEO_TransferPixels();
   #endif
     vTaskDelay(pdMS_TO_TICKS(LED_OFF_TIME_MS));
