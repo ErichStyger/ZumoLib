@@ -11,9 +11,27 @@
 
 #if PL_CONFIG_USE_NEO_PIXEL_HW
 
-#define NEOC_LANE_START        (2)  /* PTB16, this is the first GPIO pin used */
-#define NEOC_LANE_END          (2)  /* PTB16, this is the last GPIO pin used */
-#define NEOC_NOF_LEDS_IN_LANE  (50) /* number of LEDs in a lane */
+#ifndef NEOC_LANE_START
+  #if PL_CONFIG_USE_NEO_PIXEL_FRONT
+    #define NEOC_LANE_START        (3)  /* PTE3, this is the first GPIO pin used */
+  #else
+    #define NEOC_LANE_START        (16)  /* PTB16, this is the first GPIO pin used */
+  #endif
+#endif
+#ifndef NEOC_LANE_END
+  #if PL_CONFIG_USE_NEO_PIXEL_FRONT
+    #define NEOC_LANE_END          (3)  /* PTE3, this is the last GPIO pin used */
+  #else
+    #define NEOC_LANE_END          (16)  /* PTB16, this is the last GPIO pin used */
+  #endif
+#endif
+#ifndef NEOC_NOF_LEDS_IN_LANE
+  #if PL_CONFIG_USE_NEO_PIXEL_FRONT
+    #define NEOC_NOF_LEDS_IN_LANE  (8) /* number of LEDs in a lane */
+  #else
+    #define NEOC_NOF_LEDS_IN_LANE  (2) /* number of LEDs in a lane */
+  #endif
+#endif
 
 #ifndef NEOC_NOF_COLORS
   #define NEOC_NOF_COLORS (3)  /* 3 for RGB, 4 for RGBW */
