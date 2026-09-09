@@ -149,6 +149,9 @@ extern "C" {
 #ifndef PL_CONFIG_USE_NEO_PIXEL_BACK
   #define PL_CONFIG_USE_NEO_PIXEL_BACK        (1 && PL_CONFIG_USE_NEO_PIXEL_HW) /*!< 1: enable back pixels */
 #endif
+#ifndef PL_CONFIG_USE_PIXEL_LANE_CHAINING
+  #define PL_CONFIG_USE_PIXEL_LANE_CHAINING   (PL_CONFIG_USE_NEO_PIXEL_FRONT && PL_CONFIG_USE_NEO_PIXEL_BACK) /*!< if multiple lanes are chained, e.g. PTB16 (lane 0) plus PTE3 (lane 3) */
+#endif
 /*
  * ******************************   I2C, OLED, Sensor ******************************
  */

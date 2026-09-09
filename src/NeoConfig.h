@@ -11,6 +11,19 @@
 
 #if PL_CONFIG_USE_NEO_PIXEL_HW
 
+#if PL_CONFIG_USE_PIXEL_LANE_CHAINING
+  /* using lane 0 (PTB16, 2 pixels) and lane 3 (PTE3, 8 pixels). Only supporting chaining of 2 for the moment */
+  #define NEOC_LANE_START           (0)  /* PTB16 (modulo 8!, because we use 8bit in the lane), this is the first GPIO pin used */
+  #define NEOC_LANE_END             (3)  /* PTE3 (modulo 8!, because we use 8bit in the lane), this is the last GPIO pin used */
+
+  #define NEOC_LANE_FIRST           (3)  /* PTE3, back LEDS, */
+  #define NEOC_LANE_SECOND          (0)  /* PTB16, front LEDs */
+
+  #define NEOC_NOF_LEDS_FIRST       (8)  /* number of LEDS on PTE3 (front) */
+  #define NEOC_NOF_LEDS_SECOND      (2)  /* number of LEDS on PTB16 (back) */
+  #define NEOC_NOF_LEDS_IN_LANE     (NEOC_NOF_LEDS_FIRST*NEOC_NOF_LEDS_SECOND) /* number of LEDs in lanes, chained after each other */
+#endif
+
 #ifndef NEOC_LANE_START
   #if PL_CONFIG_USE_NEO_PIXEL_FRONT
     #define NEOC_LANE_START        (3)  /* PTE3 (modulo 8!, because we use 8bit in the lane), this is the first GPIO pin used */

@@ -55,9 +55,6 @@
 #define DMAMUX_BASE_PTR   (DMAMUX)
 #define FTM0_BASE_PTR     (FTM0)
 
-/* GPIO port used */
-#define DMA_GPIO_PORT    PIXEL_DMA_CONFIG_GPIO_PORT
-
 void FTM0_IRQHandler(void) {
   if ((FTM_PDD_GetOverflowInterruptFlag(FTM0_BASE_PTR)) != 0U) { /* Is the overflow interrupt flag pending? */
     FTM_PDD_ClearOverflowInterruptFlag(FTM0_BASE_PTR); /* Clear flag */
@@ -123,6 +120,34 @@ static void StopTimer(void) {
   FTM_PDD_ClearChannelInterruptFlag(FTM0_BASE_PTR, 2);
 }
 
+static void ConfigureDmaDestination(bool isFirst) {
+GPIO_Type *gpio;
+uint32_t offset;
+
+#if PL_CONFIG_USE_PIXEL_LANE_CHAINING
+  if (isFirst) {
+    gpio = PIXEL_DMA_CONFIG_LANE_GPIO_FIRST;
+    offset = PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET_FIRST;
+  } else {
+    gpio = PIXEL_DMA_CONFIG_LANE_GPIO_SECOND;
+    offset = PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET_SECOND;
+  }
+#else
+  (void)isFirst; /* don't care, not used */
+  gpio = PIXEL_DMA_CONFIG_LANE_GPIO;
+  offset = PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET;
+#endif
+#if PIXEL_DMA_CONFIG_INVERT_WAVEFORM
+  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_0, (uint32_t)((uint8_t*)&gpio->PCOR+offset)); /* set destination address: address of port Set Output register */
+  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_1, (uint32_t)((uint8_t*)&gpio->PDOR+offset)); /* set destination address: address of port Data Output register */
+  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_2, (uint32_t)((uint8_t*)&gpio->PSOR+offset)); /* set destination address: address of port Clear Output register */
+#else
+  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_0, (uint32_t)((uint8_t*)&gpio->PSOR+offset)); /* set destination address: address of port Set Output register */
+  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_1, (uint32_t)((uint8_t*)&gpio->PDOR+offset)); /* set destination address: address of port Data Output register */
+  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_2, (uint32_t)((uint8_t*)&gpio->PCOR+offset)); /* set destination address: address of port Clear Output register */
+#endif
+}
+
 static void InitDMA(void) {
   /* init the TCDs */
   for (int i = 0; i<3; i++) {
@@ -164,18 +189,15 @@ static void InitDMA(void) {
    * PDOR (Port Data Output Register) will use the data
    * PDCR (Port Data Clear Register) will use 0xff to clear the bits
    */
-  CLOCK_EnableClock(PIXEL_DMA_CONFIG_CLOCK_PORT);
+  #if PL_CONFIG_USE_PIXEL_LANE_CHAINING
+    CLOCK_EnableClock(PIXEL_DMA_CONFIG_CLOCK_PORT_FIRST);
+    CLOCK_EnableClock(PIXEL_DMA_CONFIG_CLOCK_PORT_SECOND);
+  #else
+    CLOCK_EnableClock(PIXEL_DMA_CONFIG_CLOCK_PORT);
+  #endif
   /* the DMA only transfers a single byte, so the destination address must point to the byte lane
    * (pin/8) of the 32bit register that actually contains the used pin, e.g. byte 2 for PTB16 */
-#if PIXEL_DMA_CONFIG_INVERT_WAVEFORM
-  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_0, (uint32_t)((uint8_t*)&DMA_GPIO_PORT->PCOR+PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET)); /* set destination address: address of port Set Output register */
-  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_1, (uint32_t)((uint8_t*)&DMA_GPIO_PORT->PDOR+PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET)); /* set destination address: address of port Data Output register */
-  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_2, (uint32_t)((uint8_t*)&DMA_GPIO_PORT->PSOR+PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET)); /* set destination address: address of port Clear Output register */
-#else
-  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_0, (uint32_t)((uint8_t*)&DMA_GPIO_PORT->PSOR+PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET)); /* set destination address: address of port Set Output register */
-  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_1, (uint32_t)((uint8_t*)&DMA_GPIO_PORT->PDOR+PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET)); /* set destination address: address of port Data Output register */
-  DMA_PDD_SetDestinationAddress(DMA_BASE_PTR, DMA_PDD_CHANNEL_2, (uint32_t)((uint8_t*)&DMA_GPIO_PORT->PCOR+PIXEL_DMA_CONFIG_GPIO_PIN_BYTE_OFFSET)); /* set destination address: address of port Clear Output register */
-#endif  
+  ConfigureDmaDestination(true);
   /* no destination address buffer module: we will stream data only once */
   DMA_PDD_SetDestinationAddressModulo(DMA_BASE_PTR, DMA_PDD_CHANNEL_0, DMA_PDD_CIRCULAR_BUFFER_DISABLED); /* no circular buffer */
   DMA_PDD_SetDestinationAddressModulo(DMA_BASE_PTR, DMA_PDD_CHANNEL_1, DMA_PDD_CIRCULAR_BUFFER_DISABLED); /* no circular buffer */
@@ -221,7 +243,7 @@ static void InitDMA(void) {
 #endif
 }
 
-uint8_t PIXDMA_Transfer(uint32_t dataAddress, size_t nofBytes) {
+uint8_t transfer(uint32_t dataAddress, size_t nofBytes) {
   static const uint8_t OneValue = 0xFF; /* value to clear or set the port bits */
   McuTimeout_CounterHandle handle;
   bool isTimeout;
@@ -350,25 +372,49 @@ uint8_t PIXDMA_Transfer(uint32_t dataAddress, size_t nofBytes) {
   return ERR_OK;
 }
 
+uint8_t PIXDMA_Transfer(uint32_t dataAddress, size_t nofBytes) {
+#if PL_CONFIG_USE_PIXEL_LANE_CHAINING
+  uint8_t res;
+
+  ConfigureDmaDestination(true); /* first */
+  res = transfer(dataAddress, PIXEL_DMA_CONFIG_NOF_BYTES_FIRST);
+  ConfigureDmaDestination(false); /* second */
+  res |= transfer(dataAddress+PIXEL_DMA_CONFIG_NOF_BYTES_FIRST, PIXEL_DMA_CONFIG_NOF_BYTES_SECOND);
+  return res;
+#else
+  return transfer(dataAddress, nofBytes);
+#endif
+}
+
 static void InitPin(void) {
   McuGPIO_Handle_t pinHandle;
   McuGPIO_Config_t config;
 
   McuGPIO_GetDefaultConfig(&config);
-  config.hw.gpio = PIXEL_DMA_CONFIG_NEOPIXEL_GPIO;
-  config.hw.pin = PIXEL_DMA_CONFIG_NEOPIXEL_PIN;
-  config.hw.port = PIXEL_DMA_CONFIG_NEOPIXEL_PORT;
   #if PIXEL_DMA_CONFIG_INVERT_WAVEFORM
     config.isHighOnInit = false;
   #else
     config.isHighOnInit = false;
   #endif
   config.isInput = false;
-
+#if PL_CONFIG_USE_NEO_PIXEL_FRONT
+  config.hw.gpio = PIXEL_DMA_CONFIG_NEOPIXEL_FRONT_GPIO;
+  config.hw.pin =  PIXEL_DMA_CONFIG_NEOPIXEL_FRONT_PIN;
+  config.hw.port = PIXEL_DMA_CONFIG_NEOPIXEL_FRONT_PORT;
   pinHandle = McuGPIO_InitGPIO(&config);
   if (pinHandle==NULL) {
     for(;;) {}
   }
+#endif
+#if PL_CONFIG_USE_NEO_PIXEL_BACK
+  config.hw.gpio = PIXEL_DMA_CONFIG_NEOPIXEL_BACK_GPIO;
+  config.hw.pin =  PIXEL_DMA_CONFIG_NEOPIXEL_BACK_PIN;
+  config.hw.port = PIXEL_DMA_CONFIG_NEOPIXEL_BACK_PORT;
+  pinHandle = McuGPIO_InitGPIO(&config);
+  if (pinHandle==NULL) {
+    for(;;) {}
+  }
+#endif
 }
 
 void PIXDMA_Init(void) {
