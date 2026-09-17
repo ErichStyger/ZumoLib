@@ -175,7 +175,7 @@ static void OledTask(void *pv) {
 void OLED_Init(void) {
   BaseType_t res;
 
-  res = xTaskCreate(OledTask, "OledTask", (2*1024)/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+4, NULL);
+  res = xTaskCreate(OledTask, "OledTask", (3*1024)/sizeof(StackType_t), NULL, tskIDLE_PRIORITY+4, NULL);
   if (res!=pdPASS) {
     McuLog_fatal("creating OledTask task failed!"); //  GCOVR_EXCL_LINE
   }
