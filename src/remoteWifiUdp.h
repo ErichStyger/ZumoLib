@@ -18,6 +18,24 @@
 extern "C" {
 #endif
 
+#include "remoteWifiUdp_config.h"
+
+#include "McuShell.h"
+
+/*!
+ * \brief Loads the default settings (e.g. from ini file)
+ */
+void RemoteWifiUdp_LoadSettings(void);
+
+/*!
+  * \brief Command line and shell handler
+  * \param cmd The command to be parsed
+  * \param handled If command has been recognized and handled
+  * \param io I/O handler to be used
+  * \return error code, otherwise ERR_OK
+  */
+uint8_t RemoteWifiUdp_ParseCommand(const unsigned char* cmd, bool *handled, const McuShell_StdIOType *io);
+
 #if McuLib_CONFIG_CPU_IS_ESP32
   #include "buttons.h"
   #include "McuDebounce.h"

@@ -135,6 +135,9 @@
 #if PL_CONFIG_USE_ROBOT2ESP
   #include "robotToEsp.h"
 #endif
+#if PL_CONFIG_USE_REMOTE_WIFI_UDP
+  #include "remoteWifiUdp.h"
+#endif
 #if PL_CONFIG_USE_NEO_PIXEL_HW
   #include "NeoPixel.h"
 #endif
@@ -254,6 +257,9 @@ static const McuShell_ParseCommandCallback CmdParserTable[] =
 #endif
 #if PL_CONFIG_USE_ROBOT2ESP
   RobotToEsp_ParseCommand,
+#endif
+#if PL_CONFIG_USE_REMOTE_WIFI_UDP
+  RemoteWifiUdp_ParseCommand,
 #endif
   NULL /* Sentinel */
 };

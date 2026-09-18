@@ -138,6 +138,9 @@ static void AppEsp_SuspendResumeNetworkServices(bool isSuspend) {
 #endif /* PL_CONFIG_USE_WIFI */
 
 static void AppEspTask(void *pv) {
+#if PL_CONFIG_USE_REMOTE_WIFI_UDP
+  RemoteWifiUdp_LoadSettings();
+#endif
   for(;;) {
 #if PL_CONFIG_USE_BUTTONS && !PL_CONFIG_USE_BUTTONS_IRQ
     uint32_t buttons = Buttons_GetButtons();
