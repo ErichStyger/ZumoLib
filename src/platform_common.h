@@ -240,7 +240,7 @@ extern "C" {
 #define PL_CONFIG_USE_NVMC                  (0) /* if using flash storage without MinINI*/
 #define PL_CONFIG_HAS_LCD                   (0 && PL_CONFIG_USE_I2C && !PL_CONFIG_USE_OLED && PL_CONFIG_USE_NORDIC_RADIO)
 #define PL_CONFIG_HAS_LCD_MENU              (0 && PL_CONFIG_HAS_LCD) /* experimental */
-#define PL_CONFIG_USE_MQTT_GAME             (0 && PL_CONFIG_USE_GAME && PL_CONFIG_USE_MQTT_CLIENT) /* if using the code for the MQTT game */
+#define PL_CONFIG_USE_MQTT_BATTERY          (0 && PL_CONFIG_USE_GAME && PL_CONFIG_USE_MQTT_CLIENT) /* if using the code for the MQTT battery status */
 
 /*
  * ******************************   RS-485 ******************************

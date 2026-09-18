@@ -78,7 +78,7 @@ for(;;) {
         }
       }
     }
-#elif 0 && PL_CONFIG_USE_MQTT_GAME /* \TODO */
+#elif 0 && PL_CONFIG_USE_MQTT_BATTERY /* \TODO */
     if (MqttClient_CanPublish()) {
       McuLog_info("query robot battery status");
       Game_QueryRobotBatteryVoltage(); /* periodically query robot battery voltage */
