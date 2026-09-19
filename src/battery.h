@@ -11,6 +11,9 @@
 
 #include "platform.h"
 #if PL_CONFIG_HAS_BATTERY_ADC
+
+#include <stdint.h>
+
 #if PL_CONFIG_USE_SHELL
 #include "McuShell.h"
 
